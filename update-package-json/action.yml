@@ -1,0 +1,15 @@
+name: 'Update package.json'
+description: 'Updates version information in package.json'
+
+inputs:
+  version:
+    description: 'The version being released.'
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - run: ${{ github.action_path }}/update-package-json.sh
+      shell: bash
+      env:
+        INPUT_VERSION: ${{ inputs.version }}

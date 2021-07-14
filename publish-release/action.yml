@@ -1,0 +1,21 @@
+name: 'Publish Release to GitHub'
+description: 'Publish a new release on GitHub for the specified version.'
+
+inputs:
+  version:
+    description: 'The version number of the release.'
+    required: true
+  token:
+    description: 'GitHub API token to use for request.'
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - run: ${{ github.action_path }}/publish-release.sh
+      shell: bash
+      env:
+        INPUT_VERSION: ${{ inputs.version }}
+        INPUT_TOKEN: ${{ inputs.token }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+        GITHUB_REF: ${{ github.ref }}

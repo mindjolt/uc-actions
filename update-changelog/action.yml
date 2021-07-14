@@ -1,0 +1,16 @@
+name: 'Update CHANGELOG.md'
+description: 'Updates version information and URLs in CHANGELOG.md'
+
+inputs:
+  version:
+    description: 'The version being released.'
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - run: ${{ github.action_path }}/update-changelog.sh
+      shell: bash
+      env:
+        INPUT_VERSION: ${{ inputs.version }}
+        GITHUB_REPOSITORY: ${{ github.repository }}

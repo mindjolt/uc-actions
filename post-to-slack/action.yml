@@ -1,0 +1,28 @@
+name: 'Post to Slack'
+description: 'Post a message to a Slack channel announcing the release.'
+
+inputs:
+  token:
+    description: 'Slack API token.'
+    required: true
+  channel:
+    description: 'Name of channel to post a message to.'
+    required: true
+  project_name:
+    description: 'Name of project being released.'
+    required: true
+  version:
+    description: 'The release version to be announced.'
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - run: ${{ github.action_path }}/post-to-slack.sh
+      shell: bash
+      env:
+        INPUT_TOKEN: ${{ inputs.token }}
+        INPUT_CHANNEL: ${{ inputs.channel }}
+        INPUT_PROJECT_NAME: ${{ inputs.project_name }}
+        INPUT_VERSION: ${{ inputs.version }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
