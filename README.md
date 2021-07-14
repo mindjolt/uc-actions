@@ -5,6 +5,19 @@ UnityCore repositories.
 
 # Available Actions
 
+## [check-for-changelog](https://github.com/mindjolt/uc-actions/tree/main/check-for-changelog)
+
+Ensures that the CHANGELOG.md has been updated with each pull request.
+
+## [check-for-documentation](https://github.com/mindjolt/uc-actions/tree/main/check-for-documentation)
+
+If the JIRA ticket for a given pull request is labeled with `Documentation`, the pull request is scanned for
+documentation updates.
+
+## [post-jira-comment](https://github.com/mindjolt/uc-actions/tree/main/post-jira-comment)
+
+Checks the pull request for a JIRA ticket number and adds a comment linking back to it.
+
 ## [post-to-slack](https://github.com/mindjolt/uc-actions/tree/main/post-to-slack)
 
 Sends a release notification message to a Slack channel.

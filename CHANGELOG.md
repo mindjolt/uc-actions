@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ### Added
 - (GS-16377) Imported initial set of actions.
+- (GS-16377) Imported and converted quality check actions from github-script to node.js actions.
 
 ### Fixed
 
