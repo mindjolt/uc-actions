@@ -1,0 +1,10 @@
+name: 'Post JIRA Comment'
+description: 'Post a comment linking to the JIRA ticket for the pull request'
+inputs:
+  github_token:
+    description: The GitHub API token to use for authenticated requests
+    default: ${{ github.token }}
+    required: false
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
