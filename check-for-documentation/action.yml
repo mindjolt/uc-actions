@@ -1,0 +1,18 @@
+name: 'Documentation updated'
+description: 'Ensure documentation is updated if JIRA ticket is labeled'
+inputs:
+  github_token:
+    description: 'The GitHub API token to use for authenticated requests'
+    default: ${{ github.token }}
+    required: false
+  jira_user:
+    description: 'User for making requests to JIRA'
+    default: ${{ secrets.CONFLUENCE_USER }}
+    required: false
+  jira_password:
+    description: 'Password for making requests to JIRA'
+    default: ${{ secrets.CONFLUENCE_PASSWORD }}
+    required: false
+runs:
+  using: 'node12'
+  main: 'dist/index.js'

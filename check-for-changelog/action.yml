@@ -1,0 +1,10 @@
+name: 'CHANGELOG.md updated'
+description: 'Check that CHANGELOG.md has been updated with this pull request'
+inputs:
+  github_token:
+    description: The GitHub API token to use for authenticated requests
+    default: ${{ github.token }}
+    required: false
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
