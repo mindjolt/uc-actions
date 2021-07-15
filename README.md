@@ -9,14 +9,25 @@ UnityCore repositories.
 
 Ensures that the CHANGELOG.md has been updated with each pull request.
 
+### Inputs
+- `github_token` - Valid GitHub API token (optional; will use workflow token if omittted)
+
 ## [check-for-documentation](https://github.com/mindjolt/uc-actions/tree/main/check-for-documentation)
 
 If the JIRA ticket for a given pull request is labeled with `Documentation`, the pull request is scanned for
 documentation updates.
 
+### Inputs
+- `github_token` - Valid GitHub API token (optional; will use workflow token if omittted)
+- `jira_user` - Username for JIRA authentication (optional; will use `CONFLUENCE_USER` is omitted)
+- `jira_password` - Password for JIRA authentication (optional; will use `CONFLUENCE_PASSWORD` is omitted)
+
 ## [post-jira-comment](https://github.com/mindjolt/uc-actions/tree/main/post-jira-comment)
 
 Checks the pull request for a JIRA ticket number and adds a comment linking back to it.
+
+### Inputs
+- `github_token` - Valid GitHub API token (optional; will use workflow token if omittted)
 
 ## [post-to-slack](https://github.com/mindjolt/uc-actions/tree/main/post-to-slack)
 
