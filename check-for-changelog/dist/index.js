@@ -6293,6 +6293,10 @@ async function run()
 {
     try
     {
+        const context = github.context;
+        const token = core.getInput('github_token', { required: true });
+        const api = github.getOctokit(token);
+
         var changelogFound = false;
 
         const files = await api.paginate(api.pulls.listFiles.endpoint.merge({

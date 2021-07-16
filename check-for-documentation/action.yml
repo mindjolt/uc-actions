@@ -7,12 +7,10 @@ inputs:
     required: false
   jira_user:
     description: 'User for making requests to JIRA'
-    default: ${{ secrets.CONFLUENCE_USER }}
-    required: false
+    required: true
   jira_password:
     description: 'Password for making requests to JIRA'
-    default: ${{ secrets.CONFLUENCE_PASSWORD }}
-    required: false
+    required: true
 runs:
   using: 'node12'
   main: 'dist/index.js'
