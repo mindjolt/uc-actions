@@ -6323,7 +6323,7 @@ async function run()
                 {
                     var documentationChangeFound = false;
 
-                    const files = await api.paginate(api.pulls.listFiles.endpoint.merge({
+                    const files = await api.paginate(api.rest.pulls.listFiles.endpoint.merge({
                         owner: context.issue.owner,
                         repo: context.issue.repo,
                         pull_number: context.issue.number,

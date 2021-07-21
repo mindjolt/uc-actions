@@ -15,7 +15,7 @@ async function run()
         if (jiraNumber)
         {
             const issues = await core.group('Fetching existing comments', async () => {
-                return await api.paginate(api.issues.listComments.endpoint.merge({
+                return await api.paginate(api.rest.issues.listComments.endpoint.merge({
                     owner: context.issue.owner,
                     repo: context.issue.repo,
                     issue_number: context.issue.number,
