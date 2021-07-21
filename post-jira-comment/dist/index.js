@@ -6331,7 +6331,7 @@ async function run()
 
                 core.info(`No comment found. Adding new comment: '${bodyString}'`)
 
-                api.issues.createComment({
+                api.rest.issues.createComment({
                     owner: context.repo.owner,
                     repo: context.repo.repo,
                     issue_number: context.issue.number,
