@@ -8,6 +8,9 @@ inputs:
   token:
     description: 'GitHub API token to use for request.'
     required: true
+  ref:
+    description: 'The commit or branch being published.'
+    required: true
 
 runs:
   using: composite
@@ -18,4 +21,4 @@ runs:
         INPUT_VERSION: ${{ inputs.version }}
         INPUT_TOKEN: ${{ inputs.token }}
         GITHUB_REPOSITORY: ${{ github.repository }}
-        GITHUB_REF: ${{ github.ref }}
+        GITHUB_REF: ${{ inputs.ref }}

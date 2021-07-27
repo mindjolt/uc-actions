@@ -46,6 +46,7 @@ Create a new release tag in the repository.
 ### Inputs
 - `token` - A valid GitHub API token
 - `version` - The release version number (used as the release tag name)
+- `ref` - The commit or branch being published.
 
 ## [update-changelog](https://github.com/mindjolt/uc-actions/tree/main/update-changelog)
 
