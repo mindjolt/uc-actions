@@ -1,0 +1,24 @@
+name: 'Analyze Unit Test Results'
+description: 'Check for failed unit tests and post results as an annotation.'
+
+inputs:
+  name:
+    description: 'Name to assign to the resulting check entry.'
+    required: false
+  files:
+    description: 'A list of test result xml files.'
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - run: ${{ github.action_path }}/analyze-test-results.sh
+      shell: bash
+      env:
+        INPUT_NAME: ${{ inputs.name }}
+        INPUT_FILES: ${{ inputs.files }}
+        GITHUB_TOKEN: ${{ github.token }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+        GITHUB_SHA: ${{ github.head_ref }}
+        GITHUB_EVENT_NAME: ${{ github.event_name }}
+        GITHUB_EVENT_PATH: ${{ github.event_path }}

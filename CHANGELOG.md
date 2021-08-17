@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - (GS-16377) Imported initial set of actions.
 - (GS-16377) Imported and converted quality check actions from github-script to node.js actions.
+- (GS-16529) Added an action for analyzing Unity test runner results.
 
 ### Fixed
 - Fixed ref in publish-release action.

@@ -5,12 +5,21 @@ UnityCore repositories.
 
 # Available Actions
 
+## [analyze-test-results](https://github.com/mindjolt/uc-actions/tree/main/analyze-test-results)
+
+Scans Unity test runner results for failed tests and reports them as a new, `action_required` check.  Note that no
+additional check is generated if all tests are passing.
+
+### Inputs
+- `name` - The name to assign to the generated check (optional; defaults to `test-results`)
+- `files` - One or more XML filenames to analyze
+
 ## [check-for-changelog](https://github.com/mindjolt/uc-actions/tree/main/check-for-changelog)
 
 Ensures that the CHANGELOG.md has been updated with each pull request.
 
 ### Inputs
-- `github_token` - Valid GitHub API token (optional; will use workflow token if omittted)
+- `github_token` - Valid GitHub API token (optional; will use workflow token if omitted)
 
 ## [check-for-documentation](https://github.com/mindjolt/uc-actions/tree/main/check-for-documentation)
 
