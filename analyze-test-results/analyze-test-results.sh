@@ -14,7 +14,7 @@ fi
 
 for FILENAME in ${INPUT_FILES}; do
     FAILED_TESTS=$({ grep "<test-case" "${FILENAME}" || test $? = 1; } \
-        | { grep -v "result=\"Passed\"" || test $? = 1; } \
+        | { grep "result=\"Failed\"" || test $? = 1; } \
         | { grep -Eo "fullname=\"[^\"]+\"" || test $? = 1; } \
         | cut -d \" -f 2 \
         | cut -d \( -f 1 \
