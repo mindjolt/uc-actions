@@ -20,5 +20,5 @@ runs:
       env:
         INPUT_VERSION: ${{ inputs.version }}
         INPUT_TOKEN: ${{ inputs.token }}
+        INPUT_REF: ${{ inputs.ref }}
         GITHUB_REPOSITORY: ${{ github.repository }}
-        GITHUB_REF: ${{ inputs.ref }}
