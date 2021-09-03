@@ -1,5 +1,6 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
+const fetch = require('node-fetch');
 
 
 async function run()
@@ -38,18 +39,40 @@ async function run()
             {
                 const jiraTicketNumber = jiraNumber[0];
 
-                var bodyString = `Link to JIRA Ticket: [${jiraTicketNumber}]\n\n`
-                bodyString += 'Please double check that your commits follow the [Git Commit Guidelines](https://socialgamingnetwork.jira.com/wiki/spaces/SFIOW/pages/1633026412/Git+Commit+Guidelines) :)\n\n'
-                bodyString += `[${jiraTicketNumber}]: https://socialgamingnetwork.jira.com/browse/${jiraTicketNumber}`
+                var request = {
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Basic ${Buffer.from(`${core.getInput('jira_user')}:${core.getInput('jira_password')}`).toString('base64')}`,
+                    }
+                };
 
-                core.info(`No comment found. Adding new comment: '${bodyString}'`)
+                var jiraResponse = await fetch(`https://socialgamingnetwork.jira.com/rest/api/latest/issue/${jiraTicketNumber}?fields=description`, request);
+                var jiraJSON = await jiraResponse.json();
 
-                api.rest.issues.createComment({
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    issue_number: context.issue.number,
-                    body: bodyString,
-                });
+                core.debug(jiraJSON);
+
+                if (jiraResponse.ok)
+                {
+                    var bodyString = `Link to JIRA Ticket: [${jiraTicketNumber}]\n\n`
+                    bodyString += 'Please double check that your commits follow the [Git Commit Guidelines](https://socialgamingnetwork.jira.com/wiki/spaces/SFIOW/pages/1633026412/Git+Commit+Guidelines) :)\n\n'
+                    bodyString += `[${jiraTicketNumber}]: https://socialgamingnetwork.jira.com/browse/${jiraTicketNumber}`
+                    bodyString += '---\n'
+                    bodyString += jiraJSON.fields.description
+
+                    core.info(`No comment found. Adding new comment: '${bodyString}'`)
+
+                    api.rest.issues.createComment({
+                        owner: context.repo.owner,
+                        repo: context.repo.repo,
+                        issue_number: context.issue.number,
+                        body: bodyString,
+                    });
+                }
+                else
+                {
+                    core.setFailed('There was an issue with the JIRA API');
+                }
             }
         }
         else
