@@ -6146,7 +6146,7 @@ module.exports = eval("require")("encoding");
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("assert");;
+module.exports = require("assert");
 
 /***/ }),
 
@@ -6154,7 +6154,7 @@ module.exports = require("assert");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("events");;
+module.exports = require("events");
 
 /***/ }),
 
@@ -6162,7 +6162,7 @@ module.exports = require("events");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("fs");;
+module.exports = require("fs");
 
 /***/ }),
 
@@ -6170,7 +6170,7 @@ module.exports = require("fs");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("http");;
+module.exports = require("http");
 
 /***/ }),
 
@@ -6178,7 +6178,7 @@ module.exports = require("http");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("https");;
+module.exports = require("https");
 
 /***/ }),
 
@@ -6186,7 +6186,7 @@ module.exports = require("https");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("net");;
+module.exports = require("net");
 
 /***/ }),
 
@@ -6194,7 +6194,7 @@ module.exports = require("net");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("os");;
+module.exports = require("os");
 
 /***/ }),
 
@@ -6202,7 +6202,7 @@ module.exports = require("os");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("path");;
+module.exports = require("path");
 
 /***/ }),
 
@@ -6210,7 +6210,7 @@ module.exports = require("path");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("stream");;
+module.exports = require("stream");
 
 /***/ }),
 
@@ -6218,7 +6218,7 @@ module.exports = require("stream");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("tls");;
+module.exports = require("tls");
 
 /***/ }),
 
@@ -6226,7 +6226,7 @@ module.exports = require("tls");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("url");;
+module.exports = require("url");
 
 /***/ }),
 
@@ -6234,7 +6234,7 @@ module.exports = require("url");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("util");;
+module.exports = require("util");
 
 /***/ }),
 
@@ -6242,7 +6242,7 @@ module.exports = require("util");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("zlib");;
+module.exports = require("zlib");
 
 /***/ })
 
@@ -6281,12 +6281,15 @@ module.exports = require("zlib");;
 /************************************************************************/
 /******/ 	/* webpack/runtime/compat */
 /******/ 	
-/******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";/************************************************************************/
+/******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";
+/******/ 	
+/************************************************************************/
 var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
 const core = __nccwpck_require__(24);
 const github = __nccwpck_require__(16);
+const fetch = __nccwpck_require__(460);
 
 
 async function run()
@@ -6325,18 +6328,40 @@ async function run()
             {
                 const jiraTicketNumber = jiraNumber[0];
 
-                var bodyString = `Link to JIRA Ticket: [${jiraTicketNumber}]\n\n`
-                bodyString += 'Please double check that your commits follow the [Git Commit Guidelines](https://socialgamingnetwork.jira.com/wiki/spaces/SFIOW/pages/1633026412/Git+Commit+Guidelines) :)\n\n'
-                bodyString += `[${jiraTicketNumber}]: https://socialgamingnetwork.jira.com/browse/${jiraTicketNumber}`
+                var request = {
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Basic ${Buffer.from(`${core.getInput('jira_user')}:${core.getInput('jira_password')}`).toString('base64')}`,
+                    }
+                };
 
-                core.info(`No comment found. Adding new comment: '${bodyString}'`)
+                var jiraResponse = await fetch(`https://socialgamingnetwork.jira.com/rest/api/latest/issue/${jiraTicketNumber}?fields=description`, request);
+                var jiraJSON = await jiraResponse.json();
 
-                api.rest.issues.createComment({
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    issue_number: context.issue.number,
-                    body: bodyString,
-                });
+                core.debug(jiraJSON);
+
+                if (jiraResponse.ok)
+                {
+                    var bodyString = `Link to JIRA Ticket: [${jiraTicketNumber}]\n\n`
+                    bodyString += 'Please double check that your commits follow the [Git Commit Guidelines](https://socialgamingnetwork.jira.com/wiki/spaces/SFIOW/pages/1633026412/Git+Commit+Guidelines) :)\n\n'
+                    bodyString += `[${jiraTicketNumber}]: https://socialgamingnetwork.jira.com/browse/${jiraTicketNumber}`
+                    bodyString += '---\n'
+                    bodyString += jiraJSON.fields.description
+
+                    core.info(`No comment found. Adding new comment: '${bodyString}'`)
+
+                    api.rest.issues.createComment({
+                        owner: context.repo.owner,
+                        repo: context.repo.repo,
+                        issue_number: context.issue.number,
+                        body: bodyString,
+                    });
+                }
+                else
+                {
+                    core.setFailed('There was an issue with the JIRA API');
+                }
             }
         }
         else
