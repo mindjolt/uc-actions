@@ -6346,7 +6346,8 @@ async function run()
                     var bodyString = `Link to JIRA Ticket: [${jiraTicketNumber}]\n\n`
                     bodyString += 'Please double check that your commits follow the [Git Commit Guidelines](https://socialgamingnetwork.jira.com/wiki/spaces/SFIOW/pages/1633026412/Git+Commit+Guidelines) :)\n\n'
                     bodyString += `[${jiraTicketNumber}]: https://socialgamingnetwork.jira.com/browse/${jiraTicketNumber}`
-                    bodyString += '---\n'
+                    bodyString += '\n\n---\n\n'
+                    bodyString += '**JIRA Ticket Description:**\n\n'
                     bodyString += jiraJSON.fields.description
 
                     core.info(`No comment found. Adding new comment: '${bodyString}'`)
