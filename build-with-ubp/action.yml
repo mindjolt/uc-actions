@@ -3,7 +3,7 @@ description: 'Creates a build with UBP'
 
 inputs:
   files:
-    description: 'The files you want to build with space delemited'
+    description: 'The files you want to build with space delimited'
     required: true
   override:
     description: 'Your override json for the job'
