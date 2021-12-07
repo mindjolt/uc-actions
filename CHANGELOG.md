@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Removed
 
+## [v9]
+### Added
+- Added build-with-ubp action.
+
 ## [v8]
 ### Added
 - Add ticket description to generated comment from `post-jira-comment` action.
