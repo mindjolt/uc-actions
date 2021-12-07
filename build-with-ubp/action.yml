@@ -1,0 +1,65 @@
+name: 'Build with UBP'
+description: 'Creates a build with UBP'
+
+inputs:
+  files:
+    description: 'The files you want to build with space delemited'
+    required: true
+  override:
+    description: 'Your override json for the job'
+    required: true
+  platform:
+    description: 'The target platform'
+    required: true
+  unityVersion:
+    description: 'The version of unity for building'
+    required: true
+  buildWithUnityCore:
+    description: 'Toggle on to use Unity Core execute method'
+    default: false
+    required: false
+    type: boolean
+
+runs:
+  using: composite
+  steps:
+    - name: 'Run UBP'
+      env: 
+        UNITY_COMMAND: '/Applications/Unity/Hub/Editor/${{ inputs.unityVersion }}/Unity.app/Contents/MacOS/Unity -projectPath ${{ github.workspace }} -batchmode -logfile -'
+        EXECUTE_METHOD_UNITY_CORE: '-executeMethod JamCity.Core.Editor.UnifiedBuildPipeline.Commands.BuildPlayerFromFile'
+        EXECUTE_METHOD: '-executeMethod JamCity.UnityCore.UnifiedBuildPipelineSdk.Editor.Commands.BuildPlayerFromFile'
+        WITH_PARAMS: '-withParams ${{inputs.files}}'
+        OVERRIDE_FILE: 'override.json'
+        BUILD_TARGET: '-buildTarget'
+        BUILD_WITH_UNITY_CORE: ${{inputs.buildWithUnityCore}}
+      run: |
+        echo Writing override file: $OVERRIDE_FILE
+        cat <<EOF | tee $OVERRIDE_FILE
+        ${{inputs.override}}
+        EOF
+
+        echo files to run "${{inputs.files}}"
+
+        #Determine launch platform
+        case `echo ${{inputs.platform}} | tr '[:upper:]' '[:lower:]'` in
+           "macos")
+              LAUNCH_PLATFORM=StandaloneOSX
+              ;;
+           "androidgoogle")
+              LAUNCH_PLATFORM=Android
+              ;;
+           *)
+             LAUNCH_PLATFORM=${{inputs.platform}}
+             ;;
+        esac
+        echo Unity Platform is: $LAUNCH_PLATFORM
+
+        if [ "${BUILD_WITH_UNITY_CORE}" == "true" ]; then
+          FULL_COMMAND="$UNITY_COMMAND $BUILD_TARGET $LAUNCH_PLATFORM $EXECUTE_METHOD_UNITY_CORE $WITH_PARAMS $OVERRIDE_FILE"
+        else
+          FULL_COMMAND="$UNITY_COMMAND $BUILD_TARGET $LAUNCH_PLATFORM $EXECUTE_METHOD $WITH_PARAMS $OVERRIDE_FILE"
+        fi
+
+        echo $FULL_COMMAND
+        $FULL_COMMAND
+      shell: bash
