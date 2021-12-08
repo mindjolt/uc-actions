@@ -89,6 +89,8 @@ Create a build using UBP, supports both UnityCore version and UC-UBP-SDK version
   - Defaults to `JamCity.UnityCore.UnifiedBuildPipelineSdk.Editor.Commands.BuildPlayerFromFile`.
 - <i>(optional)</i> `logFile` allows setting of custom logfile.
   - Defaults to `-` which means it will log directly to the console.
+- <i>(optional)<i/> `unityLocation` Allows setting of custom location where the different version of unity are stored.
+  - Defaults to `/Applications/Unity/Hub/Editor/`
 
 ### Example
 
