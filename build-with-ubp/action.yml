@@ -2,14 +2,14 @@ name: 'Build with UBP'
 description: 'Creates a build with UBP'
 
 inputs:
-  files:
+  jsonFiles:
     description: 'The files you want to build with space delimited'
     required: true
   override:
     description: 'Your override json for the job'
     required: true
   platform:
-    description: 'The target platform'
+    description: 'The target platform (AndroidGoogle, AndroidAmazon, AndroidSamsung, AndroidFacebook, WebGLFacebook, IOS, MacOS, Win, Win64)'
     required: true
   unityVersion:
     description: 'The version of unity for building'
@@ -23,13 +23,15 @@ inputs:
     default: '-'
     required: false
 
+
+ 
 runs:
   using: composite
   steps:
     - name: 'Run UBP'
       env: 
         UNITY_COMMAND: '/Applications/Unity/Hub/Editor/${{ inputs.unityVersion }}/Unity.app/Contents/MacOS/Unity -projectPath ${{ github.workspace }} -batchmode -logfile ${{logFile}}'
-        EXECUTE_METHOD: '-executeMethod ${{inputs.buildMethod}} -withParams ${{inputs.files}} override.json'
+        EXECUTE_METHOD: '-executeMethod ${{inputs.buildMethod}} -withParams ${{inputs.jsonFiles}} override.json'
         BUILD_TARGET: '-buildTarget'
       run: |
         echo Writing override file: override.json
@@ -37,7 +39,7 @@ runs:
         ${{inputs.override}}
         EOF
 
-        echo files to run "${{inputs.files}}"
+        echo files to run "${{inputs.jsonFiles}}"
 
         #Determine launch platform
         case `echo ${{inputs.platform}} | tr '[:upper:]' '[:lower:]'` in
@@ -46,6 +48,15 @@ runs:
               ;;
            "androidgoogle")
               LAUNCH_PLATFORM=Android
+              ;;
+           "androidamazon")
+              LAUNCH_PLATFORM=Android
+              ;;
+           "androidfacebook")
+              LAUNCH_PLATFORM=Android
+              ;;
+           "WebGLFacebook")
+              LAUNCH_PLATFORM=WebGL
               ;;
            *)
              LAUNCH_PLATFORM=${{inputs.platform}}

@@ -77,15 +77,16 @@ Update the version number in the local package.json file so that it interacts co
 Create a build using UBP, supports both UnityCore version and UC-UBP-SDK versions.
 
 ### Inputs
-- `files` - The files you want to build with space delimited
-    - Files with `%PROJECT_PATH%` will have the UBP Saved Project settings path inserted
+- `jsonFiles` - The JSON files you want to build with space delimited.
+    - Files with `%PROJECT_PATH%` will have the UBP Saved Project settings path inserted.
     - Files that start with `./` will use what ever directory was last used.
 - `platform` - The UBP platform you with to build.
+  - Supported Platforms: AndroidGoogle, AndroidAmazon, AndroidSamsung, AndroidFacebook, WebGLFacebook, IOS, MacOS, Win, Win64
 - `unityVersion` - The version of Unity to build with.
 - `override` - The JSON string to use for the override file.
-  - To create the JSON it is recommended to use [object-remap](https://github.com/nickofthyme/object-remap)
-- <i>(optional)</i> `buildMethod` allow usage of a custom build method (IE older version of UBP)
-  - Defaults to `JamCity.UnityCore.UnifiedBuildPipelineSdk.Editor.Commands.BuildPlayerFromFile`
+  - To create the JSON it is recommended to use [object-remap](https://github.com/nickofthyme/object-remap).
+- <i>(optional)</i> `buildMethod` allow usage of a custom build method (IE older version of UBP).
+  - Defaults to `JamCity.UnityCore.UnifiedBuildPipelineSdk.Editor.Commands.BuildPlayerFromFile`.
 - <i>(optional)</i> `logFile` allows setting of custom logfile.
   - Defaults to `-` which means it will log directly to the console.
 
