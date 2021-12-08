@@ -83,8 +83,11 @@ Create a build using UBP, supports both UnityCore version and UC-UBP-SDK version
 - `platform` - The UBP platform you with to build.
 - `unityVersion` - The version of Unity to build with.
 - `override` - The JSON string to use for the override file.
-  - To create the JSON it is recommended to use [object-revamp](https://github.com/nickofthyme/object-remap)
-- <i>(optional)</i> `buildWithUnityCore` If set to `true` will target UnityCore UBP instead
+  - To create the JSON it is recommended to use [object-remap](https://github.com/nickofthyme/object-remap)
+- <i>(optional)</i> `buildMethod` allow usage of a custom build method (IE older version of UBP)
+  - Defaults to `JamCity.UnityCore.UnifiedBuildPipelineSdk.Editor.Commands.BuildPlayerFromFile`
+- <i>(optional)</i> `logFile` allows setting of custom logfile.
+  - Defaults to `-` which means it will log directly to the console.
 
 ### Example
 

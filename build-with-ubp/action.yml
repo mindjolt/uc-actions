@@ -14,27 +14,26 @@ inputs:
   unityVersion:
     description: 'The version of unity for building'
     required: true
-  buildWithUnityCore:
-    description: 'Toggle on to use Unity Core execute method'
-    default: false
+  buildMethod:
+    description: 'Set a custom method to build with for UBP'
+    default: 'JamCity.UnityCore.UnifiedBuildPipelineSdk.Editor.Commands.BuildPlayerFromFile'
     required: false
-    type: boolean
+  logFile:
+    description: 'Allows setting of optional logfile'
+    default: '-'
+    required: false
 
 runs:
   using: composite
   steps:
     - name: 'Run UBP'
       env: 
-        UNITY_COMMAND: '/Applications/Unity/Hub/Editor/${{ inputs.unityVersion }}/Unity.app/Contents/MacOS/Unity -projectPath ${{ github.workspace }} -batchmode -logfile -'
-        EXECUTE_METHOD_UNITY_CORE: '-executeMethod JamCity.Core.Editor.UnifiedBuildPipeline.Commands.BuildPlayerFromFile'
-        EXECUTE_METHOD: '-executeMethod JamCity.UnityCore.UnifiedBuildPipelineSdk.Editor.Commands.BuildPlayerFromFile'
-        WITH_PARAMS: '-withParams ${{inputs.files}}'
-        OVERRIDE_FILE: 'override.json'
+        UNITY_COMMAND: '/Applications/Unity/Hub/Editor/${{ inputs.unityVersion }}/Unity.app/Contents/MacOS/Unity -projectPath ${{ github.workspace }} -batchmode -logfile ${{logFile}}'
+        EXECUTE_METHOD: '-executeMethod ${{inputs.buildMethod}} -withParams ${{inputs.files}} override.json'
         BUILD_TARGET: '-buildTarget'
-        BUILD_WITH_UNITY_CORE: ${{inputs.buildWithUnityCore}}
       run: |
-        echo Writing override file: $OVERRIDE_FILE
-        cat <<EOF | tee $OVERRIDE_FILE
+        echo Writing override file: override.json
+        cat <<EOF | tee override.json
         ${{inputs.override}}
         EOF
 
@@ -52,14 +51,8 @@ runs:
              LAUNCH_PLATFORM=${{inputs.platform}}
              ;;
         esac
-        echo Unity Platform is: $LAUNCH_PLATFORM
 
-        if [ "${BUILD_WITH_UNITY_CORE}" == "true" ]; then
-          FULL_COMMAND="$UNITY_COMMAND $BUILD_TARGET $LAUNCH_PLATFORM $EXECUTE_METHOD_UNITY_CORE $WITH_PARAMS $OVERRIDE_FILE"
-        else
-          FULL_COMMAND="$UNITY_COMMAND $BUILD_TARGET $LAUNCH_PLATFORM $EXECUTE_METHOD $WITH_PARAMS $OVERRIDE_FILE"
-        fi
-
+        FULL_COMMAND="$UNITY_COMMAND $BUILD_TARGET $LAUNCH_PLATFORM $EXECUTE_METHOD"
         echo $FULL_COMMAND
         $FULL_COMMAND
       shell: bash
