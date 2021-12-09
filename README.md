@@ -74,13 +74,13 @@ Update the version number in the local package.json file so that it interacts co
 
 ## [build-with-ubp](https://github.com/mindjolt/uc-actions/tree/main/build-with-ubp)
 
-Create a build using UBP, supports both UnityCore version and UC-UBP-SDK versions.
+Create a build using UBP. This supports both UnityCore version and UC UBP SDK version.
 
 ### Inputs
 - `jsonFiles` - The JSON files you want to build with space delimited.
     - Files with `%PROJECT_PATH%` will have the UBP Saved Project settings path inserted.
     - Files that start with `./` will use what ever directory was last used.
-- `platform` - The UBP platform you with to build.
+- `platform` - The platform that UBP will build for.
   - Supported Platforms: AndroidGoogle, AndroidAmazon, AndroidSamsung, AndroidFacebook, WebGLFacebook, IOS, MacOS, Win, Win64
 - `unityVersion` - The version of Unity to build with.
 - `override` - The JSON string to use for the override file.
