@@ -71,3 +71,43 @@ Update the version number in the local package.json file so that it interacts co
 
 ### Inputs
 - `version` - The new active version number of the package
+
+## [build-with-ubp](https://github.com/mindjolt/uc-actions/tree/main/build-with-ubp)
+
+Create a build using UBP, supports both UnityCore version and UC-UBP-SDK versions.
+
+### Inputs
+- `jsonFiles` - The JSON files you want to build with space delimited.
+    - Files with `%PROJECT_PATH%` will have the UBP Saved Project settings path inserted.
+    - Files that start with `./` will use what ever directory was last used.
+- `platform` - The UBP platform you with to build.
+  - Supported Platforms: AndroidGoogle, AndroidAmazon, AndroidSamsung, AndroidFacebook, WebGLFacebook, IOS, MacOS, Win, Win64
+- `unityVersion` - The version of Unity to build with.
+- `override` - The JSON string to use for the override file.
+  - To create the JSON it is recommended to use [object-remap](https://github.com/nickofthyme/object-remap).
+- <i>(optional)</i> `buildMethod` allow usage of a custom build method (IE older version of UBP).
+  - Defaults to `JamCity.UnityCore.UnifiedBuildPipelineSdk.Editor.Commands.BuildPlayerFromFile`.
+- <i>(optional)</i> `logFile` allows setting of custom logfile.
+  - Defaults to `-` which means it will log directly to the console.
+- <i>(optional)<i/> `unityLocation` Allows setting of custom location where the different version of unity are stored.
+  - Defaults to `/Applications/Unity/Hub/Editor/`
+
+### Example
+
+```yaml
+    steps:
+      - name: 'Make JSON Package'
+        id: JSON_STEP
+        uses: nickofthyme/object-remap@v1
+        with:
+          standardConfig.version: ${{github.event.inputs.version}}
+          standardConfig.buildID: ${{github.run_number}}
+
+      - name: 'Build Package'
+        uses: mindjolt/uc-actions/build-with-ubp@v9
+        with:
+          platform: ${{github.event.inputs.platform}}
+          unityVersion: ${{github.event.inputs.unityVersion}}
+          files: ${{github.event.inputs.primaryBuildJob}} ./${{github.event.inputs.platform}}.json
+          override: ${{steps.JSON_STEP.outputs.json}}
+```
