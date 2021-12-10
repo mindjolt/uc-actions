@@ -22,7 +22,8 @@ inputs:
     description: 'Allows setting of optional logfile'
     default: '-'
     required: false
-  unityLocation: 'Allows setting of custom location where the different version of unity are stored'
+  unityLocation:
+    description: 'Allows setting of custom location where the different version of unity are stored'
     default: '/Applications/Unity/Hub/Editor/'
     required: false
 
