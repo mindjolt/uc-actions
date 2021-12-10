@@ -49,7 +49,16 @@ runs:
            "macos")
               LAUNCH_PLATFORM=StandaloneOSX
               ;;
-           "android*")
+           "androidgoogle")
+              LAUNCH_PLATFORM=Android
+              ;;
+           "androidamazon")
+              LAUNCH_PLATFORM=Android
+              ;;
+           "androidfacebook")
+              LAUNCH_PLATFORM=Android
+              ;;
+            "androidsamsung"
               LAUNCH_PLATFORM=Android
               ;;
            "WebGLFacebook")
