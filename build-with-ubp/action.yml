@@ -58,7 +58,7 @@ runs:
            "androidfacebook")
               LAUNCH_PLATFORM=Android
               ;;
-            "androidsamsung"
+           "androidsamsung")
               LAUNCH_PLATFORM=Android
               ;;
            "WebGLFacebook")
