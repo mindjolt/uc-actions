@@ -1,11 +1,15 @@
 FORMATTED_DATE=$(date "+%Y-%m-%d")
 REPOSITORY_URL="https://github.com/${GITHUB_REPOSITORY}"
 
-MESSAGE="\`\`\`"
-MESSAGE+="${INPUT_PROJECT_NAME} ${INPUT_VERSION} was cut today!\n\n"
-MESSAGE+="GitHub: ${REPOSITORY_URL}/tree/${INPUT_VERSION}\n"
-MESSAGE+="Changelog: ${REPOSITORY_URL}/blob/${INPUT_VERSION}/CHANGELOG.md#${INPUT_VERSION//./}---${FORMATTED_DATE}"
-MESSAGE+="\`\`\`"
+MESSAGE="${INPUT_MESSAGE}"
+
+if [ "${MESSAGE}" == "" ]; then
+    MESSAGE="\`\`\`"
+    MESSAGE+="${INPUT_PROJECT_NAME} ${INPUT_VERSION} was cut today!\n\n"
+    MESSAGE+="GitHub: ${REPOSITORY_URL}/tree/${INPUT_VERSION}\n"
+    MESSAGE+="Changelog: ${REPOSITORY_URL}/blob/${INPUT_VERSION}/CHANGELOG.md#${INPUT_VERSION//./}---${FORMATTED_DATE}"
+    MESSAGE+="\`\`\`"
+fi
 
 RESPONSE=$(curl -f \
     -X POST \

@@ -14,6 +14,10 @@ inputs:
   version:
     description: 'The release version to be announced.'
     required: true
+  message:
+    description: 'An optional message to display.'
+    default: ''
+    required: false
 
 runs:
   using: composite
@@ -25,4 +29,5 @@ runs:
         INPUT_CHANNEL: ${{ inputs.channel }}
         INPUT_PROJECT_NAME: ${{ inputs.project_name }}
         INPUT_VERSION: ${{ inputs.version }}
+        INPUT_MESSAGE: ${{ inputs.message }}
         GITHUB_REPOSITORY: ${{ github.repository }}
