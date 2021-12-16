@@ -1,3 +1,7 @@
+#!/bin/bash
+
+set -eux -o pipefail
+
 FORMATTED_DATE=$(date "+%Y-%m-%d")
 REPOSITORY_URL="https://github.com/${GITHUB_REPOSITORY}"
 
@@ -11,11 +15,13 @@ if [ "${MESSAGE}" == "" ]; then
     MESSAGE+="\`\`\`"
 fi
 
+DATA="{\"channel\":\"${INPUT_CHANNEL}\",\"text\":\"${MESSAGE}\"}"
+
 RESPONSE=$(curl -f \
     -X POST \
     -H "Authorization: Bearer ${INPUT_TOKEN}" \
     -H "Content-type: application/json" \
-    --data "{\"channel\":\"${INPUT_CHANNEL}\",\"text\":\"${MESSAGE}\"}" \
+    --data "${DATA}" \
     "https://slack.com/api/chat.postMessage")
 
 if [[ "${RESPONSE}" != *"bot_message"* ]]; then
