@@ -1,0 +1,79 @@
+name: 'Run Unit Tests'
+
+on:
+  workflow_call:
+    inputs:
+      sdk_name:
+        type: string
+        required: true
+      target_ref:
+        type: string
+        required: true
+      optional_dependencies:
+        type: boolean
+        required: true
+
+jobs:
+  run-tests:
+    name: 'Run Tests'
+    runs-on: ['self-hosted', 'macOS', 'unity', 'unity-core']
+    strategy:
+      fail-fast: false
+      matrix:
+        UNITY_PLATFORM: ['Android', 'OSXUniversal', 'iOS', 'WebGL']
+        UNITY_VERSION: ['2019.4.28f1', '2020.3.14f1', '2021.1.15f1']
+    env:
+      TARGET_PACKAGE: 'JamCity.UnityCore.${{ github.event.inputs.sdk_name }}'
+      UNITY_COMMAND: '/Applications/Unity/Hub/Editor/${{ matrix.UNITY_VERSION }}/Unity.app/Contents/MacOS/Unity -buildTarget ${{ matrix.UNITY_PLATFORM }} -projectPath ${{ github.workspace }} -batchmode -logfile -'
+      EXECUTE_INSTALL_PACKAGE: '-executeMethod JamCity.UnityCoreTests.Editor.PackageCatalogUtility.InstallPackage -withParams'
+      PACKAGE_PATH: '${{ github.workspace }}/Target/Assets/Plugins/JamCity/JamCity.UnityCore.${{ github.event.inputs.sdk_name }}'
+      PLUGIN_PATH: '${{ github.workspace }}/Assets/Plugins/JamCity/JamCity.UnityCore.${{ github.event.inputs.sdk_name }}'
+      RUN_EDITOR_TESTS: '-runEditorTests -editorTestsResultFile'
+      FILE_NAME: 'EditorTestResults_${{ matrix.UNITY_PLATFORM }}.xml'
+
+    steps:
+      - name: 'Checkout UnityCoreTests'
+        uses: actions/checkout@v2
+        with:
+          repository: mindjolt/UnityCoreTests
+          ref: ${{ matrix.UNITY_VERSION }}
+          token: ${{ secrets.MJ_GITHUB_TOKEN }}
+
+      - name: 'Checkout Package'
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.inputs.target_ref }}
+          path: ${{ github.workspace }}/Target
+
+      - name: 'Build Package'
+        working-directory: ${{ env.PACKAGE_PATH }}/Editor/Release
+        run: |
+          export PACKAGE_VERSION=$(jq -r '.version' ${{ env.PACKAGE_PATH }}/package.json)
+          ./gradlew createPackage
+
+      - name: 'Install Required Dependencies'
+        if: ${{ github.event.inputs.optional_dependencies }} == 'false'
+        run: ${{ env.UNITY_COMMAND }} ${{ env.EXECUTE_INSTALL_PACKAGE }} ${{ env.PACKAGE_PATH }}/Editor/Release/build/${{ env.TARGET_PACKAGE }}/${{ env.TARGET_PACKAGE }}/package.zip
+
+      - name: 'Install Optional Dependencies'
+        if: ${{ github.event.inputs.optional_dependencies }} == 'true'
+        run: ${{ env.UNITY_COMMAND }} ${{ env.EXECUTE_INSTALL_PACKAGE }} ${{ env.PACKAGE_PATH }}/Editor/Release/build/${{ env.TARGET_PACKAGE }}/${{ env.TARGET_PACKAGE }}/package.zip --optional
+
+      - name: 'Copy Tests into Project'
+        run: |
+          mkdir -p ${{ env.PLUGIN_PATH }}/Editor/Tests
+          cp -R ${{ env.PACKAGE_PATH }}/Editor/Tests/ ${{ env.PLUGIN_PATH }}/Editor/Tests/
+
+      - name: 'Run Unit Tests'
+        run: ${{ env.UNITY_COMMAND }} ${{ env.RUN_EDITOR_TESTS }} ${{ env.FILE_NAME }}
+
+      - name: 'Upload Test Results'
+        uses: actions/upload-artifact@v2
+        with:
+          path: EditorTestResults*.xml
+
+      - name: 'Report Failed Unit Tests'
+        uses: mindjolt/uc-actions/analyze-test-results@main
+        with:
+          name: test-results (${{ matrix.UNITY_PLATFORM }}, ${{ matrix.UNITY_VERSION }})
+          files: ${{ env.FILE_NAME }}

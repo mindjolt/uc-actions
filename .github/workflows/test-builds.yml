@@ -1,0 +1,73 @@
+name: 'Test Builds'
+
+on:
+  workflow_call:
+    inputs:
+      sdk_name:
+        type: string
+        required: true
+      target_ref:
+        type: string
+        required: true
+
+jobs:
+  make-builds:
+    name: 'Build Player'
+    runs-on: ['self-hosted', 'macOS', 'unity', 'unity-core']
+    strategy:
+      fail-fast: false
+      matrix:
+        TARGET_PLATFORM: ['Android', 'Amazon', 'OSX', 'iOS', 'WebGL']
+        UNITY_VERSION: ['2019.4.28f1']
+        include:
+          - TARGET_PLATFORM: 'Android'
+            UNITY_PLATFORM: 'Android'
+            EXTRA_ARGUMENT: ''
+
+          - TARGET_PLATFORM: 'Amazon'
+            UNITY_PLATFORM: 'Android'
+            EXTRA_ARGUMENT: ' -Amazon'
+
+          - TARGET_PLATFORM: 'OSX'
+            UNITY_PLATFORM: 'OSXUniversal'
+            EXTRA_ARGUMENT: ''
+
+          - TARGET_PLATFORM: 'iOS'
+            UNITY_PLATFORM: 'iOS'
+            EXTRA_ARGUMENT: ''
+
+          - TARGET_PLATFORM: 'WebGL'
+            UNITY_PLATFORM: 'WebGL'
+            EXTRA_ARGUMENT: ''
+    env:
+      TARGET_PACKAGE: 'JamCity.UnityCore.${{ github.event.inputs.sdk_name }}'
+      UNITY_COMMAND: '/Applications/Unity/Hub/Editor/${{ matrix.UNITY_VERSION }}/Unity.app/Contents/MacOS/Unity -buildTarget ${{ matrix.UNITY_PLATFORM }} -projectPath ${{ github.workspace }} -batchmode -logfile -'
+      EXECUTE_INSTALL_PACKAGE: '-executeMethod JamCity.UnityCoreTests.Editor.PackageCatalogUtility.InstallPackage -withParams'
+      BUILD_PLAYER: '-executeMethod Builder.BuildPlayer${{ matrix.EXTRA_ARGUMENT }} -quit'
+      PACKAGE_PATH: '${{ github.workspace }}/Target/Assets/Plugins/JamCity/JamCity.UnityCore.${{ github.event.inputs.sdk_name }}'
+
+    steps:
+      - name: 'Checkout UnityCoreTests'
+        uses: actions/checkout@v2
+        with:
+          repository: mindjolt/UnityCoreTests
+          ref: ${{ matrix.UNITY_VERSION }}
+          token: ${{ secrets.MJ_GITHUB_TOKEN }}
+
+      - name: 'Checkout Package'
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.inputs.target_ref }}
+          path: ${{ github.workspace }}/Target
+
+      - name: 'Build Package'
+        working-directory: ${{ env.PACKAGE_PATH }}/Editor/Release
+        run: |
+          export PACKAGE_VERSION=$(jq -r '.version' ${{ env.PACKAGE_PATH }}/package.json)
+          ./gradlew createPackage
+
+      - name: 'Install Required Dependencies'
+        run: ${{ env.UNITY_COMMAND }} ${{ env.EXECUTE_INSTALL_PACKAGE }} ${{ env.PACKAGE_PATH }}/Editor/Release/build/${{ env.TARGET_PACKAGE }}/${{ env.TARGET_PACKAGE }}/package.zip
+
+      - name: 'Build Player'
+        run: ${{ env.UNITY_COMMAND }} ${{ env.BUILD_PLAYER }}

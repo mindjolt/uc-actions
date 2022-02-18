@@ -1,0 +1,64 @@
+name: 'Quality Checks'
+
+on:
+  workflow_call:
+    inputs:
+      sdk_name:
+        type: string
+        required: true
+      target_ref:
+        type: string
+        required: true
+
+jobs:
+  post-jira-comment:
+    name: 'Post JIRA Comment'
+    runs-on: ['self-hosted', 'k8s-svc-runners-dind']
+    steps:
+      - name: 'Check for existing comment and post if necessary'
+        uses: mindjolt/uc-actions/post-jira-comment@main
+        with:
+          jira_user: ${{ secrets.CONFLUENCE_USER }}
+          jira_password: ${{ secrets.CONFLUENCE_PASSWORD }}
+
+  check-for-changelog:
+    name: 'CHANGELOG.md updated'
+    runs-on: ['self-hosted', 'k8s-svc-runners-dind']
+    steps:
+      - name: 'Search for CHANGELOG.md update'
+        uses: mindjolt/uc-actions/check-for-changelog@main
+
+  check-for-documentation:
+    name: 'Documentation updated'
+    runs-on: ['self-hosted', 'k8s-svc-runners-dind']
+    steps:
+      - name: 'Search for Documentation update'
+        uses: mindjolt/uc-actions/check-for-documentation@main
+        with:
+          jira_user: ${{ secrets.CONFLUENCE_USER }}
+          jira_password: ${{ secrets.CONFLUENCE_PASSWORD }}
+
+  check-for-up-to-date-catalog:
+    name: 'Product catalog is up-to-date'
+    runs-on: ['self-hosted', 'k8s-svc-runners-dind']
+    env:
+      DOCUMENTATION_PATH: ${{ github.workspace }}/Assets/Plugins/JamCity/JamCity.UnityCore.${{ github.event.inputs.sdk_name }}/Editor/Documentation
+    steps:
+      - name: 'Checkout Package'
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.inputs.target_ref }}
+
+      - name: 'Create Test Index'
+        working-directory: ${{ env.DOCUMENTATION_PATH }}
+        run: python generate-index.py > temp_index.md
+
+      - name: 'Test For Missing Summaries'
+        working-directory: ${{ env.DOCUMENTATION_PATH }}
+        run: test -z "$(grep 'MISSING_SUMMARY' temp_index.md)" || (echo 'Missing summaries found!' && false)
+
+      - name: 'Test For Uncommitted Summaries'
+        working-directory: ${{ env.DOCUMENTATION_PATH }}
+        run: |
+          CATALOG_DIFF="$(diff -u index.md temp_index.md || true)"
+          test -z "${CATALOG_DIFF}" || (echo "${CATALOG_DIFF}" && false)
