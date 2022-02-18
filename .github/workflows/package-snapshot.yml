@@ -22,20 +22,20 @@ jobs:
         shell: bash
 
     env:
-      PACKAGE_NAME: 'JamCity.UnityCore.${{ github.event.inputs.sdk_name }}'
-      RELEASE_PATH: 'Assets/Plugins/JamCity/JamCity.UnityCore.${{ github.event.inputs.sdk_name }}/Editor/Release'
+      PACKAGE_NAME: 'JamCity.UnityCore.${{ inputs.sdk_name }}'
+      RELEASE_PATH: 'Assets/Plugins/JamCity/JamCity.UnityCore.${{ inputs.sdk_name }}/Editor/Release'
 
     steps:
       - name: Cloning ${{ github.ref }}
         uses: actions/checkout@v2
         with:
-          ref: ${{ github.event.inputs.branch }}
+          ref: ${{ inputs.branch }}
 
       - name: 'Create package'
         working-directory: ${{ env.RELEASE_PATH }}
         run: ./gradlew createPackage
         env:
-          PACKAGE_VERSION: '${{ github.event.inputs.version }}-SNAPSHOT'
+          PACKAGE_VERSION: '${{ inputs.version }}-SNAPSHOT'
 
       - name: 'Rename zip artifact'
         working-directory: ${{ env.RELEASE_PATH }}/build/${{ env.PACKAGE_NAME }}/${{ env.PACKAGE_NAME }}
@@ -49,7 +49,7 @@ jobs:
           password: ${{ secrets.ARTIFACTORY_PASSWORD }}
           packageZip: ${{ env.RELEASE_PATH }}/build/${{ env.PACKAGE_NAME }}/${{ env.PACKAGE_NAME }}/${{ env.PACKAGE_NAME }}.zip
           packageJson: ${{ env.RELEASE_PATH }}/build/${{ env.PACKAGE_NAME }}/${{ env.PACKAGE_NAME }}/package.json
-          branchRef: ${{ github.event.inputs.branch }}
+          branchRef: ${{ inputs.branch }}
 
       - name: 'Upload Artifacts'
         uses: actions/upload-artifact@v2

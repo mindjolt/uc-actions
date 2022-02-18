@@ -23,11 +23,11 @@ jobs:
         UNITY_PLATFORM: ['Android', 'OSXUniversal', 'iOS', 'WebGL']
         UNITY_VERSION: ['2019.4.28f1', '2020.3.14f1', '2021.1.15f1']
     env:
-      TARGET_PACKAGE: 'JamCity.UnityCore.${{ github.event.inputs.sdk_name }}'
+      TARGET_PACKAGE: 'JamCity.UnityCore.${{ inputs.sdk_name }}'
       UNITY_COMMAND: '/Applications/Unity/Hub/Editor/${{ matrix.UNITY_VERSION }}/Unity.app/Contents/MacOS/Unity -buildTarget ${{ matrix.UNITY_PLATFORM }} -projectPath ${{ github.workspace }} -batchmode -logfile -'
       EXECUTE_INSTALL_PACKAGE: '-executeMethod JamCity.UnityCoreTests.Editor.PackageCatalogUtility.InstallPackage -withParams'
-      PACKAGE_PATH: '${{ github.workspace }}/Target/Assets/Plugins/JamCity/JamCity.UnityCore.${{ github.event.inputs.sdk_name }}'
-      PLUGIN_PATH: '${{ github.workspace }}/Assets/Plugins/JamCity/JamCity.UnityCore.${{ github.event.inputs.sdk_name }}'
+      PACKAGE_PATH: '${{ github.workspace }}/Target/Assets/Plugins/JamCity/JamCity.UnityCore.${{ inputs.sdk_name }}'
+      PLUGIN_PATH: '${{ github.workspace }}/Assets/Plugins/JamCity/JamCity.UnityCore.${{ inputs.sdk_name }}'
       RUN_EDITOR_TESTS: '-runEditorTests -editorTestsResultFile'
       FILE_NAME: 'EditorTestResults_${{ matrix.UNITY_PLATFORM }}.xml'
 
@@ -42,7 +42,7 @@ jobs:
       - name: 'Checkout Package'
         uses: actions/checkout@v2
         with:
-          ref: ${{ github.event.inputs.target_ref }}
+          ref: ${{ inputs.target_ref }}
           path: ${{ github.workspace }}/Target
 
       - name: 'Build Package'
@@ -52,11 +52,11 @@ jobs:
           ./gradlew createPackage
 
       - name: 'Install Required Dependencies'
-        if: ${{ github.event.inputs.optional_dependencies }} == 'false'
+        if: ${{ inputs.optional_dependencies }} == 'false'
         run: ${{ env.UNITY_COMMAND }} ${{ env.EXECUTE_INSTALL_PACKAGE }} ${{ env.PACKAGE_PATH }}/Editor/Release/build/${{ env.TARGET_PACKAGE }}/${{ env.TARGET_PACKAGE }}/package.zip
 
       - name: 'Install Optional Dependencies'
-        if: ${{ github.event.inputs.optional_dependencies }} == 'true'
+        if: ${{ inputs.optional_dependencies }} == 'true'
         run: ${{ env.UNITY_COMMAND }} ${{ env.EXECUTE_INSTALL_PACKAGE }} ${{ env.PACKAGE_PATH }}/Editor/Release/build/${{ env.TARGET_PACKAGE }}/${{ env.TARGET_PACKAGE }}/package.zip --optional
 
       - name: 'Copy Tests into Project'

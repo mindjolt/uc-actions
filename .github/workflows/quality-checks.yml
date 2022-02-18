@@ -42,12 +42,12 @@ jobs:
     name: 'Product catalog is up-to-date'
     runs-on: ['self-hosted', 'k8s-svc-runners-dind']
     env:
-      DOCUMENTATION_PATH: ${{ github.workspace }}/Assets/Plugins/JamCity/JamCity.UnityCore.${{ github.event.inputs.sdk_name }}/Editor/Documentation
+      DOCUMENTATION_PATH: ${{ github.workspace }}/Assets/Plugins/JamCity/JamCity.UnityCore.${{ inputs.sdk_name }}/Editor/Documentation
     steps:
       - name: 'Checkout Package'
         uses: actions/checkout@v2
         with:
-          ref: ${{ github.event.inputs.target_ref }}
+          ref: ${{ inputs.target_ref }}
 
       - name: 'Create Test Index'
         working-directory: ${{ env.DOCUMENTATION_PATH }}
