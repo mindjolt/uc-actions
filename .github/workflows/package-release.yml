@@ -28,27 +28,27 @@ jobs:
         shell: bash
 
     env:
-      PROJECT_NAME: 'UnityCore.${{ github.event.inputs.sdk_name }}'
-      PACKAGE_NAME: 'JamCity.UnityCore.${{ github.event.inputs.sdk_name }}'
-      PROJECT_PATH: 'Assets/Plugins/JamCity/JamCity.UnityCore.${{ github.event.inputs.sdk_name }}'
-      RELEASE_PATH: 'Assets/Plugins/JamCity/JamCity.UnityCore.${{ github.event.inputs.sdk_name }}/Editor/Release'
+      PROJECT_NAME: 'UnityCore.${{ inputs.sdk_name }}'
+      PACKAGE_NAME: 'JamCity.UnityCore.${{ inputs.sdk_name }}'
+      PROJECT_PATH: 'Assets/Plugins/JamCity/JamCity.UnityCore.${{ inputs.sdk_name }}'
+      RELEASE_PATH: 'Assets/Plugins/JamCity/JamCity.UnityCore.${{ inputs.sdk_name }}/Editor/Release'
 
     steps:
       - name: Cloning ${{ github.ref }}
         uses: actions/checkout@v2
         with:
-          ref: ${{ github.event.inputs.branch }}
+          ref: ${{ inputs.branch }}
 
       - name: 'Update change log'
         uses: mindjolt/uc-actions/update-changelog@main
         with:
-          version: ${{ github.event.inputs.version }}
+          version: ${{ inputs.version }}
 
       - name: 'Create package'
         working-directory: ${{ env.RELEASE_PATH }}
         run: ./gradlew createPackage
         env:
-          PACKAGE_VERSION: ${{ github.event.inputs.version }}
+          PACKAGE_VERSION: ${{ inputs.version }}
 
       - name: 'Rename zip artifact'
         working-directory: ${{ env.RELEASE_PATH }}/build/${{ env.PACKAGE_NAME }}/${{ env.PACKAGE_NAME }}
@@ -62,22 +62,22 @@ jobs:
       - name: 'Commit changes'
         run: |
           git add CHANGELOG.md ${{ env.PROJECT_PATH }}/package.json ${{ env.PROJECT_PATH }}/JamCityBuildInfo.cs
-          git commit -m "Files updated for ${{ env.PROJECT_NAME }} ${{ github.event.inputs.version }} release."
+          git commit -m "Files updated for ${{ env.PROJECT_NAME }} ${{ inputs.version }} release."
 
       - name: 'Push changes to GitHub'
-        if: ${{ github.event.inputs.dry_run == 'false' }}
+        if: ${{ inputs.dry_run == 'false' }}
         run: git push
 
       - name: 'Publish release on GitHub'
-        if: ${{ github.event.inputs.dry_run == 'false' }}
+        if: ${{ inputs.dry_run == 'false' }}
         uses: mindjolt/uc-actions/publish-release@main
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          version: ${{ github.event.inputs.version }}
-          ref: ${{ github.event.inputs.branch }}
+          version: ${{ inputs.version }}
+          ref: ${{ inputs.branch }}
 
       - name: 'Publish to Artifactory'
-        if: ${{ github.event.inputs.dry_run == 'false' }}
+        if: ${{ inputs.dry_run == 'false' }}
         uses: mindjolt/actions/package-manager-publish@v2
         with:
           rootUrl: ${{ secrets.ARTIFACTORY_ROOT }}
@@ -88,13 +88,13 @@ jobs:
           branchRef: ${{ github.ref }}
 
       - name: 'Post to Slack'
-        if: ${{ github.event.inputs.dry_run == 'false' }}
+        if: ${{ inputs.dry_run == 'false' }}
         uses: mindjolt/uc-actions/post-to-slack@main
         with:
           token: ${{ secrets.SLACK_TOKEN }}
-          channel: ${{ github.event.inputs.slack_channel }}
+          channel: ${{ inputs.slack_channel }}
           project_name: ${{ env.PROJECT_NAME }}
-          version: ${{ github.event.inputs.version }}
+          version: ${{ inputs.version }}
 
       - name: 'Upload Artifacts'
         uses: actions/upload-artifact@v2
