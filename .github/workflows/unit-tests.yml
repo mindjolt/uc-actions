@@ -12,6 +12,9 @@ on:
       optional_dependencies:
         type: boolean
         required: true
+    secrets:
+      mj_github_token:
+        required: true
 
 jobs:
   run-tests:
@@ -37,7 +40,7 @@ jobs:
         with:
           repository: mindjolt/UnityCoreTests
           ref: ${{ matrix.UNITY_VERSION }}
-          token: ${{ secrets.MJ_GITHUB_TOKEN }}
+          token: ${{ secrets.mj_github_token }}
 
       - name: 'Checkout Package'
         uses: actions/checkout@v2

@@ -9,6 +9,9 @@ on:
       target_ref:
         type: string
         required: true
+    secrets:
+      mj_github_token:
+        required: true
 
 jobs:
   make-builds:
@@ -52,7 +55,7 @@ jobs:
         with:
           repository: mindjolt/UnityCoreTests
           ref: ${{ matrix.UNITY_VERSION }}
-          token: ${{ secrets.MJ_GITHUB_TOKEN }}
+          token: ${{ secrets.mj_github_token }}
 
       - name: 'Checkout Package'
         uses: actions/checkout@v2
