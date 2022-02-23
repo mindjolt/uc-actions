@@ -12,6 +12,13 @@ on:
       version:
         type: string
         required: true
+    secrets:
+      artifactory_root:
+        required: true
+      artifactory_user:
+        required: true
+      artifactory_password:
+        required: true
 
 jobs:
   build-and-release-package:
@@ -44,9 +51,9 @@ jobs:
       - name: 'Publish to Artifactory'
         uses: mindjolt/actions/package-manager-publish@v2
         with:
-          rootUrl: ${{ secrets.ARTIFACTORY_ROOT }}
-          user: ${{ secrets.ARTIFACTORY_USER }}
-          password: ${{ secrets.ARTIFACTORY_PASSWORD }}
+          rootUrl: ${{ secrets.artifactory_root }}
+          user: ${{ secrets.artifactory_user }}
+          password: ${{ secrets.artifactory_password }}
           packageZip: ${{ env.RELEASE_PATH }}/build/${{ env.PACKAGE_NAME }}/${{ env.PACKAGE_NAME }}/${{ env.PACKAGE_NAME }}.zip
           packageJson: ${{ env.RELEASE_PATH }}/build/${{ env.PACKAGE_NAME }}/${{ env.PACKAGE_NAME }}/package.json
           branchRef: ${{ inputs.branch }}

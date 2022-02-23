@@ -18,6 +18,17 @@ on:
       dry_run:
         type: boolean
         required: true
+    secrets:
+      github_token:
+        required: true
+      artifactory_root:
+        required: true
+      artifactory_user:
+        required: true
+      artifactory_password:
+        required: true
+      slack_token:
+        required: true
 
 jobs:
   build-and-release-package:
@@ -72,7 +83,7 @@ jobs:
         if: ${{ inputs.dry_run == 'false' }}
         uses: mindjolt/uc-actions/publish-release@main
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.github_token }}
           version: ${{ inputs.version }}
           ref: ${{ inputs.branch }}
 
@@ -80,9 +91,9 @@ jobs:
         if: ${{ inputs.dry_run == 'false' }}
         uses: mindjolt/actions/package-manager-publish@v2
         with:
-          rootUrl: ${{ secrets.ARTIFACTORY_ROOT }}
-          user: ${{ secrets.ARTIFACTORY_USER }}
-          password: ${{ secrets.ARTIFACTORY_PASSWORD }}
+          rootUrl: ${{ secrets.artifactory_root }}
+          user: ${{ secrets.artifactory_user }}
+          password: ${{ secrets.artifactory_password }}
           packageZip: ${{ env.RELEASE_PATH }}/build/${{ env.PACKAGE_NAME }}/${{ env.PACKAGE_NAME }}/${{ env.PACKAGE_NAME }}.zip
           packageJson: ${{ env.RELEASE_PATH }}/build/${{ env.PACKAGE_NAME }}/${{ env.PACKAGE_NAME }}/package.json
           branchRef: ${{ github.ref }}
@@ -91,7 +102,7 @@ jobs:
         if: ${{ inputs.dry_run == 'false' }}
         uses: mindjolt/uc-actions/post-to-slack@main
         with:
-          token: ${{ secrets.SLACK_TOKEN }}
+          token: ${{ secrets.slack_token }}
           channel: ${{ inputs.slack_channel }}
           project_name: ${{ env.PROJECT_NAME }}
           version: ${{ inputs.version }}

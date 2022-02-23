@@ -55,11 +55,11 @@ jobs:
           ./gradlew createPackage
 
       - name: 'Install Required Dependencies'
-        if: ${{ inputs.optional_dependencies }} == 'false'
+        if: ${{ inputs.optional_dependencies == 'false' }}
         run: ${{ env.UNITY_COMMAND }} ${{ env.EXECUTE_INSTALL_PACKAGE }} ${{ env.PACKAGE_PATH }}/Editor/Release/build/${{ env.TARGET_PACKAGE }}/${{ env.TARGET_PACKAGE }}/package.zip
 
       - name: 'Install Optional Dependencies'
-        if: ${{ inputs.optional_dependencies }} == 'true'
+        if: ${{ inputs.optional_dependencies == 'true' }}
         run: ${{ env.UNITY_COMMAND }} ${{ env.EXECUTE_INSTALL_PACKAGE }} ${{ env.PACKAGE_PATH }}/Editor/Release/build/${{ env.TARGET_PACKAGE }}/${{ env.TARGET_PACKAGE }}/package.zip --optional
 
       - name: 'Copy Tests into Project'

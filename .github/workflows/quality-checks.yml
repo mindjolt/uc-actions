@@ -9,6 +9,11 @@ on:
       target_ref:
         type: string
         required: true
+    secrets:
+      confluence_user:
+        required: true
+      confluence_password:
+        required: true
 
 jobs:
   post-jira-comment:
@@ -18,8 +23,8 @@ jobs:
       - name: 'Check for existing comment and post if necessary'
         uses: mindjolt/uc-actions/post-jira-comment@main
         with:
-          jira_user: ${{ secrets.CONFLUENCE_USER }}
-          jira_password: ${{ secrets.CONFLUENCE_PASSWORD }}
+          jira_user: ${{ secrets.confluence_user }}
+          jira_password: ${{ secrets.confluence_password }}
 
   check-for-changelog:
     name: 'CHANGELOG.md updated'
@@ -35,8 +40,8 @@ jobs:
       - name: 'Search for Documentation update'
         uses: mindjolt/uc-actions/check-for-documentation@main
         with:
-          jira_user: ${{ secrets.CONFLUENCE_USER }}
-          jira_password: ${{ secrets.CONFLUENCE_PASSWORD }}
+          jira_user: ${{ secrets.confluence_user }}
+          jira_password: ${{ secrets.confluence_password }}
 
   check-for-up-to-date-catalog:
     name: 'Product catalog is up-to-date'
