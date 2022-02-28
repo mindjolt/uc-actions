@@ -45,6 +45,15 @@ jobs:
       RELEASE_PATH: 'Assets/Plugins/JamCity/JamCity.UnityCore.${{ inputs.sdk_name }}/Editor/Release'
 
     steps:
+      - name: 'Validate Release Version'
+        run: |
+          echo "${{ inputs.version }}" | grep -E '^\d+(?:\.\d+){2}$' || (echo 'Specified version number is invalid -- expected format: x.y.z' && false)
+
+      - name: 'Validate Release Branch'
+        if: ${{ inputs.branch }} == 'develop'
+        run: |
+          echo "Releases cannot be made from the '${{ inputs.branch }}' branch" || false
+
       - name: Cloning ${{ github.ref }}
         uses: actions/checkout@v2
         with:
