@@ -23,7 +23,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        UNITY_PLATFORM: ['Android', 'OSXUniversal', 'iOS', 'WebGL']
+        UNITY_PLATFORM: ['Android', 'OSXUniversal', 'iOS', 'WebGL', 'StandaloneWindows64']
         UNITY_VERSION: ['2019.4.28f1', '2020.3.14f1', '2021.1.15f1']
     env:
       TARGET_PACKAGE: 'JamCity.UnityCore.${{ inputs.sdk_name }}'
