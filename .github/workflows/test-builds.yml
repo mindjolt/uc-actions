@@ -20,7 +20,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        TARGET_PLATFORM: ['Android', 'Amazon', 'OSX', 'iOS', 'WebGL']
+        TARGET_PLATFORM: ['Android', 'Amazon', 'OSX', 'iOS', 'WebGL', 'Windows']
         UNITY_VERSION: ['2019.4.28f1']
         include:
           - TARGET_PLATFORM: 'Android'
@@ -41,6 +41,10 @@ jobs:
 
           - TARGET_PLATFORM: 'WebGL'
             UNITY_PLATFORM: 'WebGL'
+            EXTRA_ARGUMENT: ''
+
+          - TARGET_PLATFORM: 'Windows'
+            UNITY_PLATFORM: 'StandaloneWindows64'
             EXTRA_ARGUMENT: ''
     env:
       TARGET_PACKAGE: 'JamCity.UnityCore.${{ inputs.sdk_name }}'
