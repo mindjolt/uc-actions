@@ -85,11 +85,11 @@ jobs:
           git commit -m "Files updated for ${{ env.PROJECT_NAME }} ${{ inputs.version }} release."
 
       - name: 'Push changes to GitHub'
-        if: ${{ inputs.dry_run == 'false' }}
+        if: !inputs.dry_run
         run: git push
 
       - name: 'Publish release on GitHub'
-        if: ${{ inputs.dry_run == 'false' }}
+        if: !inputs.dry_run
         uses: mindjolt/uc-actions/publish-release@main
         with:
           token: ${{ secrets.repository_token }}
@@ -97,7 +97,7 @@ jobs:
           ref: ${{ inputs.branch }}
 
       - name: 'Publish to Artifactory'
-        if: ${{ inputs.dry_run == 'false' }}
+        if: !inputs.dry_run
         uses: mindjolt/actions/package-manager-publish@v2
         with:
           rootUrl: ${{ secrets.artifactory_root }}
@@ -108,7 +108,7 @@ jobs:
           branchRef: ${{ github.ref }}
 
       - name: 'Post to Slack'
-        if: ${{ inputs.dry_run == 'false' }}
+        if: !inputs.dry_run
         uses: mindjolt/uc-actions/post-to-slack@main
         with:
           token: ${{ secrets.slack_token }}
@@ -120,5 +120,5 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           path: |
-            Editor/Release/build/${{ env.PACKAGE_NAME }}/${{ env.PACKAGE_NAME }}/${{ env.PACKAGE_NAME }}.zip
-            Editor/Release/build/${{ env.PACKAGE_NAME }}/${{ env.PACKAGE_NAME }}/package.json
+            ${{ env.RELEASE_PATH }}/build/${{ env.PACKAGE_NAME }}/${{ env.PACKAGE_NAME }}/${{ env.PACKAGE_NAME }}.zip
+            ${{ env.RELEASE_PATH }}/build/${{ env.PACKAGE_NAME }}/${{ env.PACKAGE_NAME }}/package.json
