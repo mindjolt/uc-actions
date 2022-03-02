@@ -19,7 +19,7 @@ on:
         type: boolean
         required: true
     secrets:
-      github_token:
+      repository_token:
         required: true
       artifactory_root:
         required: true
@@ -92,7 +92,7 @@ jobs:
         if: ${{ inputs.dry_run == 'false' }}
         uses: mindjolt/uc-actions/publish-release@main
         with:
-          token: ${{ secrets.github_token }}
+          token: ${{ secrets.repository_token }}
           version: ${{ inputs.version }}
           ref: ${{ inputs.branch }}
 
