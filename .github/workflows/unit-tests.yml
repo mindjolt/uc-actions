@@ -71,6 +71,7 @@ jobs:
         run: ${{ env.UNITY_COMMAND }} ${{ env.RUN_EDITOR_TESTS }} ${{ env.FILE_NAME }}
 
       - name: 'Upload Test Results'
+        if: ${{ always() }}
         uses: actions/upload-artifact@v2
         with:
           path: EditorTestResults*.xml
