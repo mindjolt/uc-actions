@@ -83,7 +83,7 @@ jobs:
         if: ${{ failure() }}
         uses: actions/upload-artifact@v2
         with:
-          name: test-results-${{ matrix-UNITY_PLATFORM }}-${{ matrix.UNITY_VERSION }}-${{ steps.dependencies.outputs.value }}
+          name: test-results-${{ matrix.UNITY_PLATFORM }}-${{ matrix.UNITY_VERSION }}-${{ steps.dependencies.outputs.value }}
           path: EditorTestResults*.xml
 
       - name: 'Report Failed Unit Tests'
