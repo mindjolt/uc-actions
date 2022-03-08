@@ -54,6 +54,15 @@ jobs:
           export PACKAGE_VERSION=$(jq -r '.version' ${{ env.PACKAGE_PATH }}/package.json)
           ./gradlew createPackage
 
+      - name: 'Select Dependency Type'
+        id: dependencies
+        run: |
+          if [ "${{ inputs.optional_dependencies }}" == "true" ]; then
+            echo "::set-output name=value::optional"
+          else
+            echo "::set-output name=value::required"
+          fi
+
       - name: 'Install Required Dependencies'
         if: ${{ !inputs.optional_dependencies }}
         run: ${{ env.UNITY_COMMAND }} ${{ env.EXECUTE_INSTALL_PACKAGE }} ${{ env.PACKAGE_PATH }}/Editor/Release/build/${{ env.TARGET_PACKAGE }}/${{ env.TARGET_PACKAGE }}/package.zip
@@ -71,9 +80,10 @@ jobs:
         run: ${{ env.UNITY_COMMAND }} ${{ env.RUN_EDITOR_TESTS }} ${{ env.FILE_NAME }}
 
       - name: 'Upload Test Results'
-        if: ${{ always() }}
+        if: ${{ failure() }}
         uses: actions/upload-artifact@v2
         with:
+          name: test-results-${{ matrix-UNITY_PLATFORM }}-${{ matrix.UNITY_VERSION }}-${{ steps.dependencies.outputs.value }}
           path: EditorTestResults*.xml
 
       - name: 'Report Failed Unit Tests'
