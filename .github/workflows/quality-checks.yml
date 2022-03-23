@@ -54,9 +54,9 @@ jobs:
         with:
           ref: ${{ inputs.target_ref }}
 
-      - name: 'Generate Temp Documentation README.md'
+      - name: 'Generate Temporary Catalog README.md'
         working-directory: ${{ env.DOCUMENTATION_PATH }}
-        run: python generate-readme.py > temp_README.md
+        run: python generate-catalog.py > temp_README.md
 
       - name: 'Check for Missing Summaries'
         working-directory: ${{ env.DOCUMENTATION_PATH }}
