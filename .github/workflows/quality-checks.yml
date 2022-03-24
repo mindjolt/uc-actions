@@ -54,16 +54,16 @@ jobs:
         with:
           ref: ${{ inputs.target_ref }}
 
-      - name: 'Create Test Index'
+      - name: 'Generate Temporary Catalog README.md'
         working-directory: ${{ env.DOCUMENTATION_PATH }}
-        run: python generate-index.py > temp_index.md
+        run: python generate-catalog.py > temp_README.md
 
-      - name: 'Test For Missing Summaries'
+      - name: 'Check for Missing Summaries'
         working-directory: ${{ env.DOCUMENTATION_PATH }}
-        run: test -z "$(grep 'MISSING_SUMMARY' temp_index.md)" || (echo 'Missing summaries found!' && false)
+        run: test -z "$(grep 'MISSING_SUMMARY' temp_README.md)" || (echo 'Missing summaries found!' && false)
 
-      - name: 'Test For Uncommitted Summaries'
+      - name: 'Compare to Existing README.md'
         working-directory: ${{ env.DOCUMENTATION_PATH }}
         run: |
-          CATALOG_DIFF="$(diff -u index.md temp_index.md || true)"
+          CATALOG_DIFF="$(diff -u README.md temp_README.md || true)"
           test -z "${CATALOG_DIFF}" || (echo "${CATALOG_DIFF}" && false)
