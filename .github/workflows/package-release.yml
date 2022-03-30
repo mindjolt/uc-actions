@@ -39,10 +39,10 @@ jobs:
         shell: bash
 
     env:
-      PROJECT_NAME: 'UnityCore.${{ inputs.sdk_name }}'
-      PACKAGE_NAME: 'JamCity.UnityCore.${{ inputs.sdk_name }}'
-      PROJECT_PATH: 'Assets/Plugins/JamCity/JamCity.UnityCore.${{ inputs.sdk_name }}'
-      RELEASE_PATH: 'Assets/Plugins/JamCity/JamCity.UnityCore.${{ inputs.sdk_name }}/Editor/Release'
+      PROJECT_NAME: '${{ inputs.sdk_name }}'
+      PACKAGE_NAME: 'JamCity.${{ inputs.sdk_name }}'
+      PROJECT_PATH: 'Assets/Plugins/JamCity/JamCity.${{ inputs.sdk_name }}'
+      RELEASE_PATH: 'Assets/Plugins/JamCity/JamCity.${{ inputs.sdk_name }}/Editor/Release'
 
     steps:
       - name: 'Validate Release Version'

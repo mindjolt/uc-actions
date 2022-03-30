@@ -10,7 +10,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 ### Changed
-- (GS-18039) Renamed documentation `index.md` to `README.md` so GitHub can find it. 
+- (GS-18039) Renamed documentation `index.md` to `README.md` so GitHub can find it.
+- (GS-18110) Removed hard-coded `UnityCore` references from workflow variables. 
 
 ### Deprecated
 

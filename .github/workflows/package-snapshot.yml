@@ -29,8 +29,8 @@ jobs:
         shell: bash
 
     env:
-      PACKAGE_NAME: 'JamCity.UnityCore.${{ inputs.sdk_name }}'
-      RELEASE_PATH: 'Assets/Plugins/JamCity/JamCity.UnityCore.${{ inputs.sdk_name }}/Editor/Release'
+      PACKAGE_NAME: 'JamCity.${{ inputs.sdk_name }}'
+      RELEASE_PATH: 'Assets/Plugins/JamCity/JamCity.${{ inputs.sdk_name }}/Editor/Release'
 
     steps:
       - name: 'Validate Snapshot Version'

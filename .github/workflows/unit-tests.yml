@@ -26,11 +26,11 @@ jobs:
         UNITY_PLATFORM: ['Android', 'OSXUniversal', 'iOS', 'WebGL', 'StandaloneWindows64']
         UNITY_VERSION: ['2019.4.28f1', '2020.3.14f1', '2021.1.15f1']
     env:
-      TARGET_PACKAGE: 'JamCity.UnityCore.${{ inputs.sdk_name }}'
+      TARGET_PACKAGE: 'JamCity.${{ inputs.sdk_name }}'
       UNITY_COMMAND: '/Applications/Unity/Hub/Editor/${{ matrix.UNITY_VERSION }}/Unity.app/Contents/MacOS/Unity -buildTarget ${{ matrix.UNITY_PLATFORM }} -projectPath ${{ github.workspace }} -batchmode -logfile -'
       EXECUTE_INSTALL_PACKAGE: '-executeMethod JamCity.UnityCoreTests.Editor.PackageCatalogUtility.InstallPackage -withParams'
-      PACKAGE_PATH: '${{ github.workspace }}/Target/Assets/Plugins/JamCity/JamCity.UnityCore.${{ inputs.sdk_name }}'
-      PLUGIN_PATH: '${{ github.workspace }}/Assets/Plugins/JamCity/JamCity.UnityCore.${{ inputs.sdk_name }}'
+      PACKAGE_PATH: '${{ github.workspace }}/Target/Assets/Plugins/JamCity/JamCity.${{ inputs.sdk_name }}'
+      PLUGIN_PATH: '${{ github.workspace }}/Assets/Plugins/JamCity/JamCity.${{ inputs.sdk_name }}'
       RUN_EDITOR_TESTS: '-runEditorTests -editorTestsResultFile'
       FILE_NAME: 'EditorTestResults_${{ matrix.UNITY_PLATFORM }}.xml'
 
