@@ -54,6 +54,12 @@ jobs:
           export PACKAGE_VERSION=$(jq -r '.version' ${{ env.PACKAGE_PATH }}/package.json)
           ./gradlew createPackage
 
+      - name: 'Configure Unity Packages'
+        run: |
+          if [[ -f "${{ github.workspace }}/Target/Packages/manifest.json" ]]; then
+              cp "${{ github.workspace }}/Target/Packages/manifest.json" "Packages/manifest.json"
+          fi
+
       - name: 'Select Dependency Type'
         id: dependencies
         run: |
