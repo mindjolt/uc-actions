@@ -5,6 +5,10 @@ inputs:
     description: The GitHub API token to use for authenticated requests
     default: ${{ github.token }}
     required: false
+  filename:
+    description: Filename to check for changes
+    default: CHANGELOG.md
+    required: false
 runs:
   using: 'node12'
   main: 'dist/index.js'

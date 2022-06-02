@@ -20,6 +20,7 @@ Ensures that the CHANGELOG.md has been updated with each pull request.
 
 ### Inputs
 - `github_token` - Valid GitHub API token (optional; will use workflow token if omitted)
+- `filename` - Filename to check for (optional; defaults to CHANGELOG.md)
 
 ## [check-for-documentation](https://github.com/mindjolt/uc-actions/tree/main/check-for-documentation)
 

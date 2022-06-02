@@ -8,6 +8,7 @@ async function run()
     {
         const context = github.context;
         const token = core.getInput('github_token', { required: true });
+        const filename = core.getInput('filename', { required: true });
         const api = github.getOctokit(token);
 
         var changelogFound = false;
@@ -21,9 +22,9 @@ async function run()
 
         for (const file of files)
         {
-            if (file.filename == 'CHANGELOG.md')
+            if (file.filename == filename)
             {
-                core.info('Found the CHANGELOG.md update');
+                core.info(`Found the ${filename} update`);
                 changelogFound = true;
                 break;
             }
@@ -31,7 +32,7 @@ async function run()
 
         if (!changelogFound)
         {
-            core.setFailed('CHANGELOG.md was not updated');
+            core.setFailed(`${filename} was not updated`);
         }
     }
     catch (error)
