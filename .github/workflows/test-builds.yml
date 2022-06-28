@@ -76,7 +76,7 @@ jobs:
       - name: 'Configure Unity Packages'
         run: |
           if [[ -f "${{ github.workspace }}/Target/Packages/manifest.json" ]]; then
-              cp "${{ github.workspace }}/Target/Packages/manifest.json" "Packages/manifest.json"
+              echo $(jq -s '.[0] * .[1]' "${{ github.workspace }}/Target/Packages/manifest.json" "Packages/manifest.json") > "Packages/manifest.json"
           fi
 
       - name: 'Install Required Dependencies'
