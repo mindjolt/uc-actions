@@ -47,6 +47,7 @@ jobs:
         with:
           ref: ${{ inputs.target_ref }}
           path: ${{ github.workspace }}/Target
+          token: ${{ secrets.mj_github_token }}
           submodules: 'recursive'
 
       - name: 'Build Package'
