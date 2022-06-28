@@ -47,6 +47,7 @@ jobs:
         with:
           ref: ${{ inputs.target_ref }}
           path: ${{ github.workspace }}/Target
+          submodules: 'recursive'
 
       - name: 'Build Package'
         working-directory: ${{ env.PACKAGE_PATH }}/Editor/Release

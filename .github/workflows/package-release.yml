@@ -58,6 +58,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: ${{ inputs.branch }}
+          submodules: 'recursive'
 
       - name: 'Update change log'
         uses: mindjolt/uc-actions/update-changelog@main
