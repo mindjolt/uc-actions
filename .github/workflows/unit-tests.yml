@@ -9,6 +9,10 @@ on:
       target_ref:
         type: string
         required: true
+      test_arguments:
+        type: string
+        default: ''
+        required: false
       optional_dependencies:
         type: boolean
         required: true
@@ -31,7 +35,7 @@ jobs:
       EXECUTE_INSTALL_PACKAGE: '-executeMethod JamCity.UnityCoreTests.Editor.PackageCatalogUtility.InstallPackage -withParams'
       PACKAGE_PATH: '${{ github.workspace }}/Target/Assets/Plugins/JamCity/JamCity.${{ inputs.sdk_name }}'
       PLUGIN_PATH: '${{ github.workspace }}/Assets/Plugins/JamCity/JamCity.${{ inputs.sdk_name }}'
-      RUN_EDITOR_TESTS: '-runEditorTests -editorTestsResultFile'
+      RUN_EDITOR_TESTS: '-runEditorTests ${{ inputs.test_arguments }} -editorTestsResultFile'
       FILE_NAME: 'EditorTestResults_${{ matrix.UNITY_PLATFORM }}.xml'
 
     steps:
