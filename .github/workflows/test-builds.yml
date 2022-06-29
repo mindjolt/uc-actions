@@ -70,8 +70,8 @@ jobs:
         with:
           ref: ${{ inputs.target_ref }}
           path: ${{ github.workspace }}/Target
-          token: ${{ (inputs.enable_submodules == 'true') && secrets.mj_github_token || github.token }}
-          submodules: ${{ (inputs.enable_submodules == 'true') && 'recursive' || 'false' }}
+          token: ${{ fromJSON(inputs.enable_submodules) && secrets.mj_github_token || github.token }}
+          submodules: ${{ fromJSON(inputs.enable_submodules) && 'recursive' || 'false' }}
 
       - name: 'Build Package'
         working-directory: ${{ env.PACKAGE_PATH }}/Editor/Release

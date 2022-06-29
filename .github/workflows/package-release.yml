@@ -64,8 +64,8 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: ${{ inputs.branch }}
-          token: ${{ (inputs.enable_submodules == 'true') && secrets.mj_github_token || github.token }}
-          submodules: ${{ (inputs.enable_submodules == 'true') && 'recursive' || 'false' }}
+          token: ${{ fromJSON(inputs.enable_submodules) && secrets.mj_github_token || github.token }}
+          submodules: ${{ fromJSON(inputs.enable_submodules) && 'recursive' || 'false' }}
 
       - name: 'Update change log'
         uses: mindjolt/uc-actions/update-changelog@main
