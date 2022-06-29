@@ -9,6 +9,10 @@ on:
       target_ref:
         type: string
         required: true
+      enable_submodules:
+        type: boolean
+        default: false
+        required: false
     secrets:
       mj_github_token:
         required: true
@@ -66,8 +70,8 @@ jobs:
         with:
           ref: ${{ inputs.target_ref }}
           path: ${{ github.workspace }}/Target
-          token: ${{ secrets.mj_github_token }}
-          submodules: 'recursive'
+          token: ${{ (inputs.enable_submodules == 'true') && secrets.mj_github_token || github.token }}
+          submodules: ${{ (inputs.enable_submodules == 'true') && 'recursive' || 'false' }}
 
       - name: 'Build Package'
         working-directory: ${{ env.PACKAGE_PATH }}/Editor/Release
