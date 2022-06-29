@@ -23,6 +23,8 @@ on:
         required: true
       artifactory_password:
         required: true
+      mj_github_token:
+        required: false
 
 jobs:
   build-and-release-package:

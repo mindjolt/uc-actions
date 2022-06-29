@@ -33,6 +33,8 @@ on:
         required: true
       slack_token:
         required: true
+      mj_github_token:
+        required: false
 
 jobs:
   build-and-release-package:
