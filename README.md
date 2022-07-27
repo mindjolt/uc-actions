@@ -32,6 +32,19 @@ documentation updates.
 - `jira_user` - Username for JIRA authentication (optional; will use `CONFLUENCE_USER` is omitted)
 - `jira_password` - Password for JIRA authentication (optional; will use `CONFLUENCE_PASSWORD` is omitted)
 
+## [create-package](https://github.com/mindjolt/uc-actions/tree/main/create-package)
+
+Creates a zip file and package.json for a given package suitable for distribution or publishing to Artifactory.
+
+### Inputs
+- `artifactory_root` - The root URI to use for Artifactory publishing
+- `package_version` - The version number being published in [Semantic Versioning](https://semver.org/) format
+- `source_path` - The absolute path to the source files to be packaged
+
+### Outputs
+- `json_path` - Absolute path to the generated `package.json` file
+- `zip_path` - Absolute path to the generated zip file containing the package contents
+
 ## [post-jira-comment](https://github.com/mindjolt/uc-actions/tree/main/post-jira-comment)
 
 Checks the pull request for a JIRA ticket number and adds a comment linking back to it.
