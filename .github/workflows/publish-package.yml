@@ -72,7 +72,7 @@ on:
 jobs:
   build-and-release-package:
     name: 'Create and publish package'
-    runs-on: ['self-hosted', 'macOS', 'unity', 'unity-core']
+    runs-on: ['self-hosted', 'k8s-svc-runners-dind']
     defaults:
       run:
         shell: bash
