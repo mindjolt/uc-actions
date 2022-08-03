@@ -83,7 +83,7 @@ jobs:
     steps:
       - name: 'Validate version number'
         run: |
-          echo "${{ inputs.package_version }}" | grep -E '^\d+(?:\.\d+){2}$' || (echo 'Specified version number is invalid -- expected format: x.y.z' && false)
+          echo "${{ inputs.package_version }}" | grep -E '^\d+(?:\.\d+){2}(?:-SNAPSHOT)?$' || (echo 'Specified version number is invalid -- expected format: x.y.z or x.y.z-SNAPSHOT' && false)
 
       - name: 'Cloning ${{ github.ref }}'
         uses: actions/checkout@v2
