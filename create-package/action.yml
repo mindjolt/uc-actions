@@ -1,0 +1,47 @@
+name: 'Create Package Artifacts'
+description: 'Generate a JSON and zip file for a package to distribute.'
+inputs:
+  artifactory_root:
+    description: 'Root uri for Artifactory repositories.'
+    required: true
+
+  package_version:
+    description: 'Version number of the package being released.'
+    required: true
+  source_path:
+    description: 'Full path to the package contents.'
+    required: true
+outputs:
+  json_path:
+    description: 'Full path to the generated package.json file.'
+    value: ${{ steps.rename.outputs.json_path }}
+  zip_path:
+    description: 'Full path to the generated package.zip file.'
+    value: ${{ steps.rename.outputs.zip_path }}
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      working-directory: ${{ github.action_path }}
+      env:
+        PROPERTIES_PATH: src/main/resources/package.properties
+      run: |
+        mkdir -p src/main/resources
+        grep -vE "^(packageVersion|sourcePath)=" ${{ inputs.source_path }}/package.properties > ${PROPERTIES_PATH}
+        echo "packageVersion=${{ inputs.package_version }}" >> ${PROPERTIES_PATH}
+        echo "sourcePath=${{ inputs.source_path }}" >> ${PROPERTIES_PATH}
+
+    - shell: bash
+      working-directory: ${{ github.action_path }}
+      env:
+        INPUT_ARTIFACTORY_ROOT: ${{ inputs.artifactory_root }}
+      run: ./gradlew createPackage
+
+    - shell: bash
+      id: rename
+      working-directory: ${{ github.action_path }}
+      run: |
+        PACKAGE_NAME=$(grep -E "^packageName=" ${{ inputs.source_path }}/package.properties | awk '{split($0, a, "="); print a[2]}')
+        mv ./build/package.zip ./build/${PACKAGE_NAME}.zip
+        echo "::set-output name=json_path::$(pwd)/build/package.json"
+        echo "::set-output name=zip_path::$(pwd)/build/${PACKAGE_NAME}.zip"

@@ -1,0 +1,31 @@
+plugins {
+    id 'base'
+    id 'java'
+    id 'com.jfrog.artifactory' version '4.21.0'
+}
+
+artifactory {
+    contextUrl = System.env.INPUT_ARTIFACTORY_ROOT
+
+    resolve {
+        repository {
+            repoKey = 'libs-release'
+            maven = true
+        }
+    }
+}
+
+dependencies {
+    implementation 'com.jamcity.jcpm:tools_2.12:2.4.0'
+}
+
+task createPackage(type: JavaExec, description: 'Create the package for distribution.') {
+    dependsOn build
+
+    main = 'com.jamcity.PackageBuilder'
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+createPackage.mustRunAfter clean
+
+assemble.dependsOn(clean)
