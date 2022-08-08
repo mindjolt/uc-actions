@@ -79,7 +79,9 @@ public class PackageBuilder {
 
                     return !name.startsWith(".") &&
                             !"package.json".equals(name) &&
+                            !"package.json.meta".equals(name) &&
                             !"package.properties".equals(name) &&
+                            !"package.properties.meta".equals(name) &&
                             !"JamCityBuildInfo.cs".equals(name) &&
                             !excludePaths.contains(relativePath);
                 })
