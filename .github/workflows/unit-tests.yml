@@ -21,6 +21,8 @@ on:
         default: false
         required: false
     secrets:
+      artifactory_root:
+        required: true
       mj_github_token:
         required: true
 
@@ -58,11 +60,18 @@ jobs:
           token: ${{ fromJSON(inputs.enable_submodules) && secrets.mj_github_token || github.token }}
           submodules: ${{ fromJSON(inputs.enable_submodules) && 'recursive' || 'false' }}
 
-      - name: 'Build Package'
-        working-directory: ${{ env.PACKAGE_PATH }}/Editor/Release
+      - name: 'Determine Package Version'
+        id: 'package_version'
         run: |
-          export PACKAGE_VERSION=$(jq -r '.version' ${{ env.PACKAGE_PATH }}/package.json)
-          ./gradlew createPackage
+          echo "::set-output name=value::$(jq -r '.version' ${{ env.PACKAGE_PATH }}/package.json)"
+
+      - name: 'Create Package'
+        id: 'create_package'
+        uses: mindjolt/uc-actions/create-package@main
+        with:
+          artifactory_root: ${{ secrets.artifactory_root }}
+          package_version: ${{ steps.package_version.outputs.value }}
+          source_path: ${{ env.PACKAGE_PATH }}
 
       - name: 'Configure Unity Packages'
         run: |
@@ -81,11 +90,11 @@ jobs:
 
       - name: 'Install Required Dependencies'
         if: ${{ !inputs.optional_dependencies }}
-        run: ${{ env.UNITY_COMMAND }} ${{ env.EXECUTE_INSTALL_PACKAGE }} ${{ env.PACKAGE_PATH }}/Editor/Release/build/${{ env.TARGET_PACKAGE }}/${{ env.TARGET_PACKAGE }}/package.zip
+        run: ${{ env.UNITY_COMMAND }} ${{ env.EXECUTE_INSTALL_PACKAGE }} ${{ steps.create_package.outputs.zip_path }}
 
       - name: 'Install Optional Dependencies'
         if: ${{ inputs.optional_dependencies }}
-        run: ${{ env.UNITY_COMMAND }} ${{ env.EXECUTE_INSTALL_PACKAGE }} ${{ env.PACKAGE_PATH }}/Editor/Release/build/${{ env.TARGET_PACKAGE }}/${{ env.TARGET_PACKAGE }}/package.zip --optional
+        run: ${{ env.UNITY_COMMAND }} ${{ env.EXECUTE_INSTALL_PACKAGE }} ${{ steps.create_package.outputs.zip_path }} --optional
 
       - name: 'Copy Tests into Project'
         run: |
