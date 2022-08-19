@@ -122,7 +122,7 @@ jobs:
         working-directory: ${{ env.SOURCE_PATH }}
         run: |
           cp ${{ steps.create_package.outputs.json_path }} ./package.json
-          unzip -o -j -d . ${{ steps.create_package.outputs.zip_path }} ./JamCityBuildInfo.cs
+          unzip -o -j -d . ${{ steps.create_package.outputs.zip_path }} ${{ steps.properties.outputs.package_name }}/JamCityBuildInfo.cs
 
       - name: 'Commit changes'
         if: ${{ !inputs.dry_run && inputs.push_changes }}
@@ -130,7 +130,8 @@ jobs:
           if [[ "${{ inputs.update_changelog }}" == "true" ]]; then
             git add CHANGELOG.md
           fi
-          git add package.json JamCityBuildInfo.cs
+          git add ${{ inputs.source_path }}/package.json
+          git add ${{ inputs.source_path }}/JamCityBuildInfo.cs
           git commit -m "Files updated for ${{ steps.properties.outputs.package_name }} ${{ inputs.package_version }} release."
 
       - name: 'Push changes to GitHub'
