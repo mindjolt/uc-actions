@@ -127,6 +127,8 @@ jobs:
       - name: 'Commit changes'
         if: ${{ !inputs.dry_run && inputs.push_changes }}
         run: |
+          git config user.email "build@jamcity.com"
+          git config user.name "Build Machine"
           if [[ "${{ inputs.update_changelog }}" == "true" ]]; then
             git add CHANGELOG.md
           fi
