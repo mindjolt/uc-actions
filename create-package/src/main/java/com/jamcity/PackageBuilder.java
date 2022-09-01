@@ -157,6 +157,8 @@ public class PackageBuilder {
                     list.add(elements[index]);
                 }
             }
+        } else if (!input.isBlank()) {
+            list.add(input.trim());
         }
 
         return list;
