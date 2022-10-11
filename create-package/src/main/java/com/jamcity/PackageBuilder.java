@@ -166,7 +166,7 @@ public class PackageBuilder {
 
     private static void addPackageDependencies(JamCityPackage.JamCityPackageBuilder builder,
                                                Collection<String> dependencies, JamCityPackage.DependencyScope scope) {
-        final Pattern pattern = Pattern.compile("^\\s*([\\w.]+)\\s*([<>=]+\\s*[\\d.]+)\\s*$");
+        final Pattern pattern = Pattern.compile("^\\s*([\\w.]+)\\s*([<>=]+\\s*[\\d.]+\\s*)+$");
 
         for (String dependency : dependencies) {
             final Matcher matcher = pattern.matcher(dependency);
