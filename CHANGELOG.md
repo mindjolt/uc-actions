@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 - (GS-18039) Renamed documentation `index.md` to `README.md` so GitHub can find it.
 - (GS-18110) Removed hard-coded `UnityCore` references from workflow variables. 
+- (GS-18679) Upgrade dependencies and move actions to `node16` environment.
 
 ### Deprecated
 
