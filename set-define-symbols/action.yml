@@ -1,0 +1,39 @@
+name: 'Set Define Symbols'
+description: 'Sets define symbols in a Unity project.'
+
+inputs:
+  project_path:
+    description: 'Path to Unity project root.'
+    default: ${{ github.workspace }}
+    required: false
+  remove_symbols:
+    description: 'If true, the specified symbols are removed rather than added.'
+    default: false
+    required: false
+  symbols:
+    description: 'A list of define symbols to be set or removed.'
+    required: true
+  platforms:
+    description: 'An optional list of platforms to apply the change to.'
+    required: false
+
+runs:
+  using: composite
+  steps:
+    - if: ${{ runner.os != "Windows" }}
+      shell: bash
+      env:
+        INPUT_PROJECT_PATH: ${{ inputs.project_path }}
+        INPUT_REMOVE_SYMBOLS: ${{ inputs.remove_symbols }}
+        INPUT_SYMBOLS: ${{ inputs.symbols }}
+        INPUT_PLATFORMS: ${{ inputs.platforms }}
+      run: ${{ github.action_path }}/set-define-symbols.py
+
+    - if: ${{ runner.os == "Windows" }}
+      shell: cmd
+      env:
+        INPUT_PROJECT_PATH: ${{ inputs.project_path }}
+        INPUT_REMOVE_SYMBOLS: ${{ inputs.remove_symbols }}
+        INPUT_SYMBOLS: ${{ inputs.symbols }}
+        INPUT_PLATFORMS: ${{ inputs.platforms }}
+      run: python ${{ github.action_path }}\set-define-symbols.py
