@@ -61,14 +61,19 @@ def get_parameters():
 
         symbols = environment['INPUT_SYMBOLS']
 
-    if platforms is None:
-        if 'INPUT_PLATFORMS' in environment:
-            platforms = environment['INPUT_PLATFORMS']
-
     symbols = [s.strip() for s in RE_NAMES.findall(symbols)]
+
+    if len(symbols) == 0:
+        raise Exception('No symbols were provided')
+
+    if (platforms is None) and ('INPUT_PLATFORMS' in environment):
+        platforms = environment['INPUT_PLATFORMS']
 
     if platforms is not None:
         platforms = [p.strip() for p in RE_NAMES.findall(platforms)]
+
+        if len(platforms) == 0:
+            raise Exception('Platform list is invalid')
 
     return project_path, remove_symbols, symbols, platforms
 
