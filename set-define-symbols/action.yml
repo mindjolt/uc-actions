@@ -27,7 +27,7 @@ runs:
         INPUT_REMOVE_SYMBOLS: ${{ inputs.remove_symbols }}
         INPUT_SYMBOLS: ${{ inputs.symbols }}
         INPUT_PLATFORMS: ${{ inputs.platforms }}
-      run: ${{ github.action_path }}/set-define-symbols.py
+      run: python3 ${{ github.action_path }}/set-define-symbols.py
 
     - if: ${{ runner.os == 'Windows' }}
       shell: cmd
