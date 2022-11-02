@@ -20,7 +20,7 @@ inputs:
 runs:
   using: composite
   steps:
-    - if: ${{ runner.os != "Windows" }}
+    - if: ${{ runner.os != 'Windows' }}
       shell: bash
       env:
         INPUT_PROJECT_PATH: ${{ inputs.project_path }}
@@ -29,7 +29,7 @@ runs:
         INPUT_PLATFORMS: ${{ inputs.platforms }}
       run: ${{ github.action_path }}/set-define-symbols.py
 
-    - if: ${{ runner.os == "Windows" }}
+    - if: ${{ runner.os == 'Windows' }}
       shell: cmd
       env:
         INPUT_PROJECT_PATH: ${{ inputs.project_path }}
