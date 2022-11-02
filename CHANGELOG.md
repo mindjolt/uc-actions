@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ### Added
 - (GS-18575) Added a generic package publishing workflow.
+- (GS-18938) Added an action for modifying scripting define symbols in Unity projects.
 
 ### Fixed
 

@@ -50,7 +50,7 @@ Creates a zip file and package.json for a given package suitable for distributio
 Checks the pull request for a JIRA ticket number and adds a comment linking back to it.
 
 ### Inputs
-- `github_token` - Valid GitHub API token (optional; will use workflow token if omittted)
+- `github_token` - Valid GitHub API token (optional; will use workflow token if omitted)
 
 ## [post-to-slack](https://github.com/mindjolt/uc-actions/tree/main/post-to-slack)
 
@@ -70,6 +70,16 @@ Create a new release tag in the repository.
 - `token` - A valid GitHub API token
 - `version` - The release version number (used as the release tag name)
 - `ref` - The commit or branch being published.
+
+## [set-define-symbols](https://github.com/mindjolt/uc-actions/tree/main/set-define-symbols)
+
+Manipulate script define symbols for a Unity project externally.
+
+### Inputs
+- `project_path` - Path to the root of the Unity project (optional; defaults to the current workspace)
+- `remove_symbols` - Should symbols be removed rather than added? (optional; defaults to `false`)
+- `symbols` - List of define symbols to be added or removed, separated by `,` or `;`
+- `platforms` - List of platforms to modify, separated by `,` or `;` (optional; by default will modify all platforms in the project)
 
 ## [update-changelog](https://github.com/mindjolt/uc-actions/tree/main/update-changelog)
 
