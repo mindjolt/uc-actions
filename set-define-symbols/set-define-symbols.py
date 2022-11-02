@@ -94,8 +94,10 @@ if __name__ == '__main__':
                 if platforms is None or platform in platforms:
                     for symbol in symbols:
                         if remove_symbols and symbol in define_symbols:
+                            print(f'Removing symbol "{symbol}" from platform "{platform}"')
                             define_symbols.remove(symbol)
                         elif not remove_symbols and symbol not in define_symbols:
+                            print(f'Adding symbol "{symbol}" to platform "{platform}"')
                             define_symbols.append(symbol)
 
                 value = ';'.join(define_symbols)
