@@ -67,7 +67,8 @@ def get_parameters():
         raise Exception('No symbols were provided')
 
     if (platforms is None) and ('INPUT_PLATFORMS' in environment):
-        platforms = environment['INPUT_PLATFORMS']
+        if environment['INPUT_PLATFORMS'].strip() != '':
+            platforms = environment['INPUT_PLATFORMS']
 
     if platforms is not None:
         platforms = [p.strip() for p in RE_NAMES.findall(platforms)]
