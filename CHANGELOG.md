@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Deprecated
 
 ### Removed
+- (GS-19049) Removed deprecated `package-release` and `-snapshot` workflows
 
 ## [v9]
 ### Added
@@ -62,7 +63,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - (GS-16377) Import `post-to-slack`, `publish-release`, `update-changelog` and `update-package-json` actions from UnityCore.
 
 [Unreleased]: https://github.com/mindjolt/uc-actions/tree/HEAD
-[v9]: https://github.com/mindjolt/uc-actions/tree/v8
+[v9]: https://github.com/mindjolt/uc-actions/tree/v9
 [v8]: https://github.com/mindjolt/uc-actions/tree/v8
 [v7]: https://github.com/mindjolt/uc-actions/tree/v7
 [v6]: https://github.com/mindjolt/uc-actions/tree/v6
