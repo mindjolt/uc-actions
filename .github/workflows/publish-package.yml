@@ -161,7 +161,7 @@ jobs:
           prereleaseRepo: ${{ inputs.artifactory_repository }}
 
       - name: 'Post to Slack'
-        if: ${{ !inputs.dry_run && inputs.publish_release && inputs.slack_channel != '' }}
+        if: ${{ !inputs.dry_run && inputs.publish_release && inputs.slack_channel != '' && secrets.slack_token != '' }}
         uses: mindjolt/uc-actions/post-to-slack@main
         with:
           token: ${{ secrets.slack_token }}
