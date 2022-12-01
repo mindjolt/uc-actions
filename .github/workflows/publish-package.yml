@@ -24,7 +24,7 @@ on:
       slack_channel:
         description: 'Which Slack channel to announce package release to.  Requires slack_token secret.'
         type: string
-        default: ''
+        default: 'sdk_announce'
         required: false
 
       dry_run:
