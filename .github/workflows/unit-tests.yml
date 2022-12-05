@@ -37,10 +37,11 @@ jobs:
         UNITY_VERSION: ['2019.4.28f1', '2020.3.14f1', '2021.3.4f1']
     env:
       TARGET_PACKAGE: 'JamCity.${{ inputs.sdk_name }}'
-      UNITY_COMMAND: '/Applications/Unity/Hub/Editor/${{ matrix.UNITY_VERSION }}/Unity.app/Contents/MacOS/Unity -buildTarget ${{ matrix.UNITY_PLATFORM }} -projectPath ${{ github.workspace }} -batchmode -logfile -'
+      UNITY_COMMAND: '/Applications/Unity/Hub/Editor/${{ matrix.UNITY_VERSION }}/Unity.app/Contents/MacOS/Unity -buildTarget ${{ matrix.UNITY_PLATFORM }} -projectPath ${{ github.workspace }}/${{ matrix.UNITY_VERSION }} -batchmode -logfile -'
       EXECUTE_INSTALL_PACKAGE: '-executeMethod JamCity.UnityCoreTests.Editor.PackageCatalogUtility.InstallPackage -withParams'
       PACKAGE_PATH: '${{ github.workspace }}/Target/Assets/Plugins/JamCity/JamCity.${{ inputs.sdk_name }}'
-      PLUGIN_PATH: '${{ github.workspace }}/Assets/Plugins/JamCity/JamCity.${{ inputs.sdk_name }}'
+      PLUGIN_PATH: '${{ github.workspace }}/${{ matrix.UNITY_VERSION }}/Assets/Plugins/JamCity/JamCity.${{ inputs.sdk_name }}'
+      MANIFEST_PATH: '${{github.workspace }}/${{ matrix.UNITY_VERSION }}/Packages/manifest.json'
       RUN_EDITOR_TESTS: '-runEditorTests ${{ inputs.test_arguments }} -editorTestsResultFile'
       FILE_NAME: 'EditorTestResults_${{ matrix.UNITY_PLATFORM }}.xml'
 
@@ -49,7 +50,6 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: mindjolt/UnityCoreTests
-          ref: ${{ matrix.UNITY_VERSION }}
           token: ${{ secrets.mj_github_token }}
 
       - name: 'Checkout Package'
@@ -59,6 +59,9 @@ jobs:
           path: ${{ github.workspace }}/Target
           token: ${{ fromJSON(inputs.enable_submodules) && secrets.mj_github_token || github.token }}
           submodules: ${{ fromJSON(inputs.enable_submodules) && 'recursive' || 'false' }}
+
+      - name: 'Set Unity Version'
+        run: ln -s ${{ github.workspace }}/Source ${{ github.workspace }}/${{ matrix.UNITY_VERSION }}/Assets
 
       - name: 'Determine Package Version'
         id: 'package_version'
@@ -76,7 +79,7 @@ jobs:
       - name: 'Configure Unity Packages'
         run: |
           if [[ -f "${{ github.workspace }}/Target/Packages/manifest.json" ]]; then
-              echo $(jq -s '.[0] * .[1]' "${{ github.workspace }}/Target/Packages/manifest.json" "Packages/manifest.json") > "Packages/manifest.json"
+              echo $(jq -s '.[0] * .[1]' "${{ github.workspace }}/Target/Packages/manifest.json" "${{ env.MANIFEST_PATH }}") > "${{ env.MANIFEST_PATH }}"
           fi
 
       - name: 'Select Dependency Type'
@@ -109,10 +112,10 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: test-results-${{ matrix.UNITY_PLATFORM }}-${{ matrix.UNITY_VERSION }}-${{ steps.dependencies.outputs.value }}
-          path: EditorTestResults*.xml
+          path: ${{ matrix.UNITY_VERSION }}/EditorTestResults*.xml
 
       - name: 'Report Failed Unit Tests'
         uses: mindjolt/uc-actions/analyze-test-results@main
         with:
           name: test-results (${{ matrix.UNITY_PLATFORM }}, ${{ matrix.UNITY_VERSION }})
-          files: ${{ env.FILE_NAME }}
+          files: ${{ matrix.UNITY_VERSION }}/${{ env.FILE_NAME }}
