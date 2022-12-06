@@ -54,17 +54,17 @@ jobs:
             EXTRA_ARGUMENT: ''
     env:
       TARGET_PACKAGE: 'JamCity.${{ inputs.sdk_name }}'
-      UNITY_COMMAND: '/Applications/Unity/Hub/Editor/${{ matrix.UNITY_VERSION }}/Unity.app/Contents/MacOS/Unity -buildTarget ${{ matrix.UNITY_PLATFORM }} -projectPath ${{ github.workspace }} -batchmode -logfile -'
+      UNITY_COMMAND: '/Applications/Unity/Hub/Editor/${{ matrix.UNITY_VERSION }}/Unity.app/Contents/MacOS/Unity -buildTarget ${{ matrix.UNITY_PLATFORM }} -projectPath ${{ github.workspace }}/${{ matrix.UNITY_VERSION }} -batchmode -logfile -'
       EXECUTE_INSTALL_PACKAGE: '-executeMethod JamCity.UnityCoreTests.Editor.PackageCatalogUtility.InstallPackage -withParams'
       BUILD_PLAYER: '-executeMethod Builder.BuildPlayer${{ matrix.EXTRA_ARGUMENT }} -quit'
       PACKAGE_PATH: '${{ github.workspace }}/Target/Assets/Plugins/JamCity/JamCity.${{ inputs.sdk_name }}'
+      MANIFEST_PATH: '${{github.workspace }}/${{ matrix.UNITY_VERSION }}/Packages/manifest.json'
 
     steps:
       - name: 'Checkout UnityCoreTests'
         uses: actions/checkout@v2
         with:
           repository: mindjolt/UnityCoreTests
-          ref: ${{ matrix.UNITY_VERSION }}
           token: ${{ secrets.mj_github_token }}
 
       - name: 'Checkout Package'
@@ -74,6 +74,9 @@ jobs:
           path: ${{ github.workspace }}/Target
           token: ${{ fromJSON(inputs.enable_submodules) && secrets.mj_github_token || github.token }}
           submodules: ${{ fromJSON(inputs.enable_submodules) && 'recursive' || 'false' }}
+
+      - name: 'Set Unity Version'
+        run: ln -s ${{ github.workspace }}/Source ${{ github.workspace }}/${{ matrix.UNITY_VERSION }}/Assets
 
       - name: 'Determine Package Version'
         id: 'package_version'
@@ -91,7 +94,7 @@ jobs:
       - name: 'Configure Unity Packages'
         run: |
           if [[ -f "${{ github.workspace }}/Target/Packages/manifest.json" ]]; then
-              echo $(jq -s '.[0] * .[1]' "${{ github.workspace }}/Target/Packages/manifest.json" "Packages/manifest.json") > "Packages/manifest.json"
+              echo $(jq -s '.[0] * .[1]' "${{ github.workspace }}/Target/Packages/manifest.json" "${{ env.MANIFEST_PATH }}") > "${{ env.MANIFEST_PATH }}"
           fi
 
       - name: 'Install Required Dependencies'
