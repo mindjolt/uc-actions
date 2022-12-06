@@ -8,11 +8,9 @@ REPOSITORY_URL="https://github.com/${GITHUB_REPOSITORY}"
 MESSAGE="${INPUT_MESSAGE}"
 
 if [ "${MESSAGE}" == "" ]; then
-    MESSAGE="\`\`\`"
-    MESSAGE+="${INPUT_PROJECT_NAME} ${INPUT_VERSION} was cut today!\n\n"
-    MESSAGE+="GitHub: ${REPOSITORY_URL}/tree/${INPUT_VERSION}\n"
-    MESSAGE+="Changelog: ${REPOSITORY_URL}/blob/${INPUT_VERSION}/CHANGELOG.md#${INPUT_VERSION//./}---${FORMATTED_DATE}"
-    MESSAGE+="\`\`\`"
+    MESSAGE="_${INPUT_PROJECT_NAME} ${INPUT_VERSION}_"
+    MESSAGE+="<${REPOSITORY_URL}/blob/${INPUT_VERSION}/CHANGELOG.md#${INPUT_VERSION//./}---${FORMATTED_DATE}|Release Notes>"
+    MESSAGE+="<${REPOSITORY_URL}/tree/${INPUT_VERSION}|Documentation>"
 fi
 
 DATA="{\"channel\":\"${INPUT_CHANNEL}\",\"text\":\"${MESSAGE}\"}"

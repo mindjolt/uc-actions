@@ -15,10 +15,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - (GS-18039) Renamed documentation `index.md` to `README.md` so GitHub can find it.
 - (GS-18110) Removed hard-coded `UnityCore` references from workflow variables. 
 - (GS-18679) Upgrade dependencies and move actions to `node16` environment.
+- (GS-19049) Modified flows to announce published packages in `sdk_announce` by default
 
 ### Deprecated
 
 ### Removed
+- (GS-19049) Removed deprecated `package-release` and `-snapshot` workflows
 
 ## [v9]
 ### Added
@@ -61,6 +63,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - (GS-16377) Import `post-to-slack`, `publish-release`, `update-changelog` and `update-package-json` actions from UnityCore.
 
 [Unreleased]: https://github.com/mindjolt/uc-actions/tree/HEAD
+[v9]: https://github.com/mindjolt/uc-actions/tree/v9
 [v8]: https://github.com/mindjolt/uc-actions/tree/v8
 [v7]: https://github.com/mindjolt/uc-actions/tree/v7
 [v6]: https://github.com/mindjolt/uc-actions/tree/v6
