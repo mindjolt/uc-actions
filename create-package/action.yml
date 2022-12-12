@@ -43,5 +43,5 @@ runs:
       run: |
         PACKAGE_NAME=$(grep -E "^packageName=" ${{ inputs.source_path }}/package.properties | awk '{split($0, a, "="); print a[2]}')
         mv ./build/package.zip ./build/${PACKAGE_NAME}.zip
-        echo "::set-output name=json_path::$(pwd)/build/package.json"
-        echo "::set-output name=zip_path::$(pwd)/build/${PACKAGE_NAME}.zip"
+        echo "json_path=$(pwd)/build/package.json" >> $GITHUB_OUTPUT
+        echo "zip_path=$(pwd)/build/${PACKAGE_NAME}.zip" >> $GITHUB_OUTPUT

@@ -101,7 +101,7 @@ jobs:
       - name: 'Parse package properties'
         id: 'properties'
         run: |
-          echo "::set-output name=package_name::$(grep -E "^packageName=" ${{ inputs.source_path }}/package.properties | awk '{split($0, a, "="); print a[2]}')"
+          echo "package_name=$(grep -E "^packageName=" ${{ inputs.source_path }}/package.properties | awk '{split($0, a, "="); print a[2]}')" >> $GITHUB_OUTPUT
 
       - name: 'Update changelog'
         if: ${{ !inputs.dry_run && inputs.update_changelog }}
