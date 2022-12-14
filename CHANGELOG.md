@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - (GS-18679) Upgrade dependencies and move actions to `node16` environment.
 - (GS-19049) Modified flows to announce published packages in `sdk_announce` by default
 - (GS-18736) Modified test-builds and unit-tests workflows to use new UnityCoreTests structure.
+- (GS-19076) Replaced deprecated set-output commands in workflows and actions.
 
 ### Deprecated
 

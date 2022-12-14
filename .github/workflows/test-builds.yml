@@ -81,7 +81,7 @@ jobs:
       - name: 'Determine Package Version'
         id: 'package_version'
         run: |
-          echo "::set-output name=value::$(jq -r '.version' ${{ env.PACKAGE_PATH }}/package.json)"
+          echo "value=$(jq -r '.version' ${{ env.PACKAGE_PATH }}/package.json)" >> $GITHUB_OUTPUT
 
       - name: 'Create Package'
         id: 'create_package'
