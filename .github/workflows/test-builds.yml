@@ -27,7 +27,7 @@ jobs:
       fail-fast: false
       matrix:
         TARGET_PLATFORM: ['Android', 'Amazon', 'OSX', 'iOS', 'WebGL', 'Windows']
-        UNITY_VERSION: ['2019.4.28f1']
+        UNITY_VERSION: ['2020.3.44f1']
         include:
           - TARGET_PLATFORM: 'Android'
             UNITY_PLATFORM: 'Android'
