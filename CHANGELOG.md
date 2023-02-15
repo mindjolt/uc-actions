@@ -6,23 +6,35 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Added
-- (GS-18575) Added a generic package publishing workflow.
-- (GS-18938) Added an action for modifying scripting define symbols in Unity projects.
 
 ### Fixed
 
 ### Changed
-- (GS-18039) Renamed documentation `index.md` to `README.md` so GitHub can find it.
-- (GS-18110) Removed hard-coded `UnityCore` references from workflow variables. 
-- (GS-18679) Upgrade dependencies and move actions to `node16` environment.
 - (GS-19049) Modified flows to announce published packages in `sdk_announce` by default
 - (GS-18736) Modified test-builds and unit-tests workflows to use new UnityCoreTests structure.
 - (GS-19076) Replaced deprecated set-output commands in workflows and actions.
+- (GS-19007) Updated `test-builds` and `unit-tests` workflows to use Unity versions 2020.3.44f1 and 2021.3.18f1.
 
 ### Deprecated
 
 ### Removed
 - (GS-19049) Removed deprecated `package-release` and `-snapshot` workflows
+
+## [v12]
+### Added
+- (GS-18938) Added an action for modifying scripting define symbols in Unity projects.
+
+## [v11]
+### Added
+- (GS-18575) Added a generic package publishing workflow.
+
+### Changed
+- (GS-18679) Upgrade dependencies and move actions to `node16` environment.
+
+## [v10]
+### Changed
+- (GS-18039) Renamed documentation `index.md` to `README.md` so GitHub can find it.
+- (GS-18110) Removed hard-coded `UnityCore` references from workflow variables.
 
 ## [v9]
 ### Added
@@ -65,6 +77,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - (GS-16377) Import `post-to-slack`, `publish-release`, `update-changelog` and `update-package-json` actions from UnityCore.
 
 [Unreleased]: https://github.com/mindjolt/uc-actions/tree/HEAD
+[v12]: https://github.com/mindjolt/uc-actions/tree/v12
+[v11]: https://github.com/mindjolt/uc-actions/tree/v11
+[v10]: https://github.com/mindjolt/uc-actions/tree/v10
 [v9]: https://github.com/mindjolt/uc-actions/tree/v9
 [v8]: https://github.com/mindjolt/uc-actions/tree/v8
 [v7]: https://github.com/mindjolt/uc-actions/tree/v7
