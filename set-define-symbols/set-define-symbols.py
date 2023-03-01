@@ -84,18 +84,22 @@ if __name__ == '__main__':
     input_path = os.path.join(project_path, 'ProjectSettings/ProjectSettings.asset')
     output, state = [], 0
 
+    remaining_platforms = set(platforms) if platforms is not None else set()
+
     # None of the YAML libraries handled this properly, so just edit the file
     # as a stream since we know the format and layout we care about.
     with open(input_path, 'rt') as in_file:
         for line in in_file:
-            if (((state == 0) and (line == '  scriptingDefineSymbols:\n')) or
-                ((state == 1) and (not line.startswith('    ')))):
-                    state += 1
+            if (state == 0) and (line == '  scriptingDefineSymbols:\n'):
+                state += 1
 
-            if (state == 1) and line.startswith('    '):
+            elif (state == 1) and line.startswith('    '):
                 key, value = line.split(':')
                 platform = key.strip()
                 define_symbols = list(RE_NAMES.findall(value.strip()))
+
+                if platform in remaining_platforms:
+                    remaining_platforms.remove(platform)
 
                 if platforms is None or platform in platforms:
                     for symbol in symbols:
@@ -108,6 +112,16 @@ if __name__ == '__main__':
 
                 value = ';'.join(define_symbols)
                 line = f'{key}: {value}\n'
+
+            elif (state == 1):
+                if platforms is not None and len(remaining_platforms) > 0:
+                    all_symbols = ';'.join(symbols)
+
+                    for platform in remaining_platforms:
+                        print(f'Creating platform "{platform}" with symbols "{all_symbols}"')
+                        output.append(f'    {platform}: {all_symbols}\n')
+
+                state += 1
 
             output.append(line)
 
