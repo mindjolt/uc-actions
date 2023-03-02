@@ -42,7 +42,7 @@ jobs:
       PACKAGE_PATH: '${{ github.workspace }}/Target/Assets/Plugins/JamCity/JamCity.${{ inputs.sdk_name }}'
       PLUGIN_PATH: '${{ github.workspace }}/${{ matrix.UNITY_VERSION }}/Assets/Plugins/JamCity/JamCity.${{ inputs.sdk_name }}'
       MANIFEST_PATH: '${{github.workspace }}/${{ matrix.UNITY_VERSION }}/Packages/manifest.json'
-      RUN_EDITOR_TESTS: '-runEditorTests ${{ inputs.test_arguments }} -editorTestsResultFile'
+      RUN_EDITOR_TESTS: '-runEditorTests ${{ inputs.test_arguments }} -testCategory "!Performance" -editorTestsResultFile'
       FILE_NAME: 'EditorTestResults_${{ matrix.UNITY_PLATFORM }}.xml'
 
     steps:

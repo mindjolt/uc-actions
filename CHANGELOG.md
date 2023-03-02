@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - (GS-18736) Modified test-builds and unit-tests workflows to use new UnityCoreTests structure.
 - (GS-19076) Replaced deprecated set-output commands in workflows and actions.
 - (GS-19007) Updated `test-builds` and `unit-tests` workflows to use Unity versions 2020.3.44f1 and 2021.3.18f1.
+- (GS-19256) Changed `unit-tests` workflow to exclude `Performance` tests.
 
 ### Deprecated
 
