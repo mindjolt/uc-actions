@@ -25,8 +25,6 @@ class _Context(object):
         statement = f'''INSERT INTO {table_name} ({", ".join(fields)})
                         VALUES ({", ".join(["?"] * len(fields))})'''
 
-        #print(' '.join([line for line in [line.strip() for line in statement.splitlines()] if line != '']))
-
         self._cursor.executemany(statement, values)
         self._connection.commit()
 
@@ -50,7 +48,6 @@ class _Context(object):
             return row[0]
 
     def _execute(self, statement: str) -> sqlite3.Cursor:
-        #print(' '.join([line for line in [line.strip() for line in statement.splitlines()] if line != '']))
         return self._cursor.execute(statement)
 
 
