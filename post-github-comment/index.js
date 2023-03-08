@@ -27,7 +27,7 @@ const getExistingComment = async (parameters) => {
 };
 
 
-const createComment = async (parameters, _) => {
+const createComment = (parameters, _) => {
   return parameters.api.rest.issues.createComment({
       owner: parameters.context.repo.owner,
       repo: parameters.context.repo.repo,
@@ -37,7 +37,7 @@ const createComment = async (parameters, _) => {
 };
 
 
-const replaceComment = async (parameters, existingComment) => {
+const replaceComment = (parameters, existingComment) => {
   return parameters.api.rest.issues.updateComment({
       owner: parameters.context.repo.owner,
       repo: parameters.context.repo.repo,
@@ -47,7 +47,7 @@ const replaceComment = async (parameters, existingComment) => {
 };
 
 
-const amendComment = async (parameters, existingComment) => {
+const amendComment = (parameters, existingComment) => {
   const newCommentBody = existingComment.body.split('\n').slice(1).map((line) => {
     const prelude = line.match(/^\s*[\*-] /) || [''];
     const parts = [prelude[0], line.substr(prelude[0].length)];
@@ -60,11 +60,11 @@ const amendComment = async (parameters, existingComment) => {
 
 
 const createNewCommentOr = (func) => {
-  return async (parameters, existingComment) => {
+  return (parameters, existingComment) => {
     if (existingComment === null) {
-      await createComment(parameters, existingComment);
+      return createComment(parameters, existingComment);
     } else {
-      func(parameters, existingComment);
+      return func(parameters, existingComment);
     }
   };
 };
