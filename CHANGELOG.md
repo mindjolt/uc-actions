@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Added
+- (GS-19257) Added workflows and actions for automated performance analysis.
 
 ### Fixed
 

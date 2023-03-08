@@ -1,0 +1,54 @@
+name: 'Compare Performance Metrics'
+
+on:
+  workflow_call:
+    inputs:
+      enable_submodules:
+        type: boolean
+        default: false
+        required: false
+    secrets:
+      mj_github_token:
+        required: true
+
+jobs:
+  run-performance-tests:
+    name: 'Run Performance Tests'
+    runs-on: ['self-hosted', 'macOS', 'unity', 'unity-core', 'performance']
+
+    steps:
+      - name: 'Checkout Repository'
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ inputs.target_ref }}
+          token: ${{ fromJSON(inputs.enable_submodules) && secrets.mj_github_token || github.token }}
+          submodules: ${{ fromJSON(inputs.enable_submodules) && 'recursive' || 'false' }}
+
+      - name: 'Determine Unity Version'
+        id: unity_version
+        run: |
+          echo "value=$(cat ${{ github.workspace }}/ProjectSettings/ProjectVersion.txt | grep 'm_EditorVersion:' | awk '{print $2}')" >> $GITHUB_OUTPUT
+
+      - name: 'Run Performance Tests'
+        run: |
+          /Applications/Unity/Hub/Editor/${{ steps.unity_version.outputs.value }}/Unity.app/Contents/MacOS/Unity \
+            -buildTarget OSXUniversal \
+            -projectPath ${{ github.workspace }} \
+            -batchmode -releaseCodeOptimization -logfile - \
+            -runEditorTests -runSynchronously -testCategory "Performance"
+
+      - name: 'Compare Performance Metrics'
+        id: analysis
+        uses: mindjolt/uc-actions/performance-analysis@main
+        with:
+          operation: compare
+          database_path: ${HOME}/unity-core-performance.db
+          input_path: ${{ github.workspace }}/Assets/performance-metrics.csv
+
+      - name: 'Post Results'
+        if: ${{ steps.analysis.outputs.alerts }} != ''
+        uses: mindjolt/uc-actions/post-github-comment@main
+        with:
+          mode: amend
+          title: 'Performance analysis:'
+          body: ${{ steps.analysis.outputs.alerts }}

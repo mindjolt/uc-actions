@@ -1,0 +1,25 @@
+name: 'Post GitHub Comment'
+description: 'Create or update a comment on a pull request.'
+
+inputs:
+  github_token:
+    description: The GitHub API token to use for authenticated requests
+    default: ${{ github.token }}
+    required: false
+
+  mode:
+    description: One of [amend, create, new, replace], specifying how the comment should be treated in the presence of an existing one
+    default: 'new'
+    required: false
+
+  title:
+    description: A title to use at the top of the comment
+    required: false
+
+  body:
+    description: The body of the comment
+    required: true
+
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
