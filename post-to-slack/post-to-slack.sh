@@ -9,8 +9,8 @@ MESSAGE="${INPUT_MESSAGE}"
 
 if [ "${MESSAGE}" == "" ]; then
     MESSAGE="_${INPUT_PROJECT_NAME} ${INPUT_VERSION}_"
-    MESSAGE+="<${REPOSITORY_URL}/blob/${INPUT_VERSION}/CHANGELOG.md#${INPUT_VERSION//./}---${FORMATTED_DATE}|Release Notes>"
-    MESSAGE+="<${REPOSITORY_URL}/tree/${INPUT_VERSION}|Documentation>"
+    MESSAGE+="\n<${REPOSITORY_URL}/blob/${INPUT_VERSION}/CHANGELOG.md#${INPUT_VERSION//./}---${FORMATTED_DATE}|Release Notes>"
+    MESSAGE+="\n<${REPOSITORY_URL}/tree/${INPUT_VERSION}|Documentation>"
 fi
 
 DATA="{\"channel\":\"${INPUT_CHANNEL}\",\"text\":\"${MESSAGE}\"}"
