@@ -1,7 +1,13 @@
-def parse_args(args: list[str]) -> tuple[str | None, str | None, str | None]:
-    command_name: str | None = None
-    database_path: str | None = None
-    report_path: str | None = None
+from typing import Iterable, Union
+
+
+OptionalString = Union[str, None]
+
+
+def parse_args(args: list[str]) -> tuple[OptionalString, OptionalString, OptionalString]:
+    command_name: OptionalString = None
+    database_path: OptionalString = None
+    report_path: OptionalString = None
     index, count = 0, len(args)
 
     while index < count:

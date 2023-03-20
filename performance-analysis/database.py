@@ -1,5 +1,5 @@
 import sqlite3
-from typing import Iterable
+from typing import Iterable, Union
 
 
 _INTEGER = 'INTEGER'
@@ -7,7 +7,10 @@ _PRIMARY_KEY = 'PRIMARY KEY'
 _REAL = 'REAL'
 _TEXT = 'TEXT'
 
-IdMap = dict[str, int | None]
+OptionalInt = Union[int, None]
+OptionalStringList = Union[list[str], None]
+
+IdMap = dict[str, OptionalInt]
 
 
 class _Context(object):
@@ -118,7 +121,7 @@ class _Table(object):
 
         return row_id
 
-    def insert_many(self, context: _Context, fields: list[str] | None, values: list) -> None:
+    def insert_many(self, context: _Context, fields: OptionalStringList, values: list) -> None:
         fields = fields or [column.name for column in self._columns]
         context.insert(self.name, fields, values)
 

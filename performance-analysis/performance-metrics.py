@@ -18,13 +18,12 @@ if __name__ == '__main__':
 
     db = Database(database_path)
 
-    match command_name:
-        case 'compare':
-            compare_report(db, report_path)
-        case 'ingest':
-            ingest_report(db, report_path)
-        case 'initialize':
-            db.drop_all_tables()
-            db.create_all_tables()
-        case _:
-            raise Exception(f'unknown command: {command_name}')
+    if command_name == 'compare':
+        compare_report(db, report_path)
+    elif command_name == 'ingest':
+        ingest_report(db, report_path)
+    elif command_name == 'initialize':
+        db.drop_all_tables()
+        db.create_all_tables()
+    else:
+        raise Exception(f'unknown command: {command_name}')
