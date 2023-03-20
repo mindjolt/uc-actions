@@ -46,7 +46,7 @@ jobs:
           input_path: ${{ github.workspace }}/Assets/performance-metrics.csv
 
       - name: 'Post Results'
-        if: ${{ steps.analysis.outputs.alerts }} != ''
+        if: steps.analysis.outputs.alerts != ''
         uses: mindjolt/uc-actions/post-github-comment@main
         with:
           mode: amend
