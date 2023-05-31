@@ -50,7 +50,7 @@ jobs:
       DOCUMENTATION_PATH: ${{ github.workspace }}/Assets/Plugins/JamCity/JamCity.${{ inputs.sdk_name }}/Editor/Documentation
     steps:
       - name: 'Checkout Package'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ref: ${{ inputs.target_ref }}
 
