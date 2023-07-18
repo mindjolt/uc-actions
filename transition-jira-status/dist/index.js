@@ -6297,77 +6297,60 @@ async function run()
     try
     {
         const context = github.context;
-        const token = core.getInput('github_token', { required: true });
-        const api = github.getOctokit(token);
-        const jiraProjectPrefix = core.getInput('jira_project_prefix', { required: false, default: 'GS' }).toUpperCase();
-        const postJiraTicketDescriptionString = core.getInput('post_jira_ticket_description', { required: false, default: "true"});
+        const jiraProjectPrefix = core.getInput('jira_project_prefix', { required: true }).toUpperCase();
+        const jiraStatusId = core.getInput('jira_status_id', { required: true });
+        const jiraStatusTransitionId = core.getInput('jira_status_transition_id', { required: true });
 
         const jiraNumber = context.payload.pull_request.title.match(new RegExp(`^${jiraProjectPrefix}-[0-9]+`, "g"));
 
         if (jiraNumber)
         {
-            const issues = await core.group('Fetching existing comments', async () => {
-                return await api.paginate(api.rest.issues.listComments.endpoint.merge({
-                    owner: context.issue.owner,
-                    repo: context.issue.repo,
-                    issue_number: context.issue.number,
-                }));
-            });
+            const jiraTicketNumber = jiraNumber[0];
 
-            var previousCommentFound = false;
-
-            for (const issue of issues)
-            {
-                if (issue.body.includes('Link to JIRA Ticket'))
-                {
-                    core.info('Found JIRA comment');
-                    previousCommentFound = true;
-                    break;
+            var request = {
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Basic ${Buffer.from(`${core.getInput('jira_user')}:${core.getInput('jira_password')}`).toString('base64')}`,
                 }
-            }
+            };
 
-            if (!previousCommentFound)
+            var jiraResponse = await fetch(`https://socialgamingnetwork.jira.com/rest/api/latest/issue/${jiraTicketNumber}?fields=status`, request);
+            var jiraJSON = await jiraResponse.json();
+
+            core.debug(jiraJSON);
+
+            if (jiraResponse.ok && (jiraResponse.fields.status.id == jiraStatusId))
             {
-                const jiraTicketNumber = jiraNumber[0];
-
                 var request = {
+                    method: 'POST',
                     credentials: 'include',
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Basic ${Buffer.from(`${core.getInput('jira_user')}:${core.getInput('jira_password')}`).toString('base64')}`,
-                    }
+                    },
+                    body: JSON.stringify({
+                        transition: {
+                            id: jiraStatusTransitionId
+                        }
+                    })
                 };
 
-                var jiraResponse = await fetch(`https://socialgamingnetwork.jira.com/rest/api/latest/issue/${jiraTicketNumber}?fields=description`, request);
-                var jiraJSON = await jiraResponse.json();
+                core.debug(request);
 
-                core.debug(jiraJSON);
+                var jiraPOSTResponse = await fetch(`https://socialgamingnetwork.jira.com/rest/api/latest/issue/${jiraTicketNumber}/transitions`, request);
+                var jiraPostJSON = await jiraResponse.json();
 
-                if (jiraResponse.ok)
+                core.debug(jiraPostJSON);
+
+                if (!jiraPOSTResponse.ok)
                 {
-                    var bodyString = `Link to JIRA Ticket: [${jiraTicketNumber}]\n\n`
-                    bodyString += `[${jiraTicketNumber}]: https://socialgamingnetwork.jira.com/browse/${jiraTicketNumber}`
-
-                    if (postJiraTicketDescriptionString === 'true')
-                    {
-                        bodyString += '\n\n---\n\n'
-                        bodyString += '**JIRA Ticket Description:**\n\n'
-                        bodyString += jiraJSON.fields.description
-                    }
-
-                    core.info(`No comment found. Adding new comment: '${bodyString}'`)
-
-                    api.rest.issues.createComment({
-                        owner: context.repo.owner,
-                        repo: context.repo.repo,
-                        issue_number: context.issue.number,
-                        body: bodyString,
-                    });
+                    core.setFailed('There was an issue using the JIRA API to transition the ticket status');
                 }
-                else
-                {
-                    core.setFailed('There was an issue with the JIRA API');
-                }
+            }
+            else
+            {
+                core.setFailed('There was an issue fetching ticket status with the JIRA API');
             }
         }
         else
