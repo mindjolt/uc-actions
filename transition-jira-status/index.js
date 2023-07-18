@@ -44,7 +44,7 @@ async function run()
                         },
                         body: JSON.stringify({
                             transition: {
-                                id: "${jiraStatusTransitionId}"
+                                id: `${jiraStatusTransitionId}`
                             }
                         })
                     };
