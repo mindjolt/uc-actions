@@ -52,9 +52,6 @@ async function run()
                     core.debug(postRequest);
 
                     var jiraPOSTResponse = await fetch(`https://socialgamingnetwork.jira.com/rest/api/latest/issue/${jiraTicketNumber}/transitions`, postRequest);
-                    var jiraPostJSON = await jiraPOSTResponse.json();
-
-                    core.debug(jiraPostJSON);
 
                     if (jiraPOSTResponse.ok)
                     {
