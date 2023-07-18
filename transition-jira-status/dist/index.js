@@ -6320,32 +6320,43 @@ async function run()
 
             core.debug(jiraJSON);
 
-            if (jiraResponse.ok && (jiraJSON.fields.status.id == jiraStatusId))
+            if (jiraResponse.ok)
             {
-                var postRequest = {
-                    method: 'POST',
-                    credentials: 'include',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Basic ${Buffer.from(`${core.getInput('jira_user')}:${core.getInput('jira_password')}`).toString('base64')}`,
-                    },
-                    body: JSON.stringify({
-                        transition: {
-                            id: "${jiraStatusTransitionId}"
-                        }
-                    })
-                };
-
-                core.debug(postRequest);
-
-                var jiraPOSTResponse = await fetch(`https://socialgamingnetwork.jira.com/rest/api/latest/issue/${jiraTicketNumber}/transitions`, postRequest);
-                var jiraPostJSON = await jiraResponse.json();
-
-                core.debug(jiraPostJSON);
-
-                if (!jiraPOSTResponse.ok)
+                if (jiraJSON.fields.status.id == jiraStatusId)
                 {
-                    core.setFailed('There was an issue using the JIRA API to transition the ticket status');
+                    var postRequest = {
+                        method: 'POST',
+                        credentials: 'include',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Basic ${Buffer.from(`${core.getInput('jira_user')}:${core.getInput('jira_password')}`).toString('base64')}`,
+                        },
+                        body: JSON.stringify({
+                            transition: {
+                                id: "${jiraStatusTransitionId}"
+                            }
+                        })
+                    };
+
+                    core.debug(postRequest);
+
+                    var jiraPOSTResponse = await fetch(`https://socialgamingnetwork.jira.com/rest/api/latest/issue/${jiraTicketNumber}/transitions`, postRequest);
+                    var jiraPostJSON = await jiraResponse.json();
+
+                    core.debug(jiraPostJSON);
+
+                    if (jiraPOSTResponse.ok)
+                    {
+                        core.info('JIRA ticket status transition succesful');
+                    }
+                    else
+                    {
+                        core.setFailed('There was an issue using the JIRA API to transition the ticket status');
+                    }
+                }
+                else
+                {
+                    core.info('JIRA ticket status does not match');
                 }
             }
             else
