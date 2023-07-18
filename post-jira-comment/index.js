@@ -8,10 +8,12 @@ async function run()
     try
     {
         const context = github.context;
-        const token = core.getInput('github_token', { required: true });
         const api = github.getOctokit(token);
+        const token = core.getInput('github_token', { required: true });
+        const jiraProjectPrefix = core.getInput('jira_project_prefix', { required: false, default: 'GS' }).toUpperCase();
+        const postJiraTicketDescriptionString = core.getInput('post_jira_ticket_description', { required: false, default: "true"});
 
-        const jiraNumber = context.payload.pull_request.title.match(/^GS-[0-9]+/g);
+        const jiraNumber = context.payload.pull_request.title.match(new RegExp(`^${jiraProjectPrefix}-[0-9]+`, "g"));
 
         if (jiraNumber)
         {
@@ -55,11 +57,14 @@ async function run()
                 if (jiraResponse.ok)
                 {
                     var bodyString = `Link to JIRA Ticket: [${jiraTicketNumber}]\n\n`
-                    bodyString += 'Please double check that your commits follow the [Git Commit Guidelines](https://socialgamingnetwork.jira.com/wiki/spaces/SFIOW/pages/1633026412/Git+Commit+Guidelines) :)\n\n'
                     bodyString += `[${jiraTicketNumber}]: https://socialgamingnetwork.jira.com/browse/${jiraTicketNumber}`
-                    bodyString += '\n\n---\n\n'
-                    bodyString += '**JIRA Ticket Description:**\n\n'
-                    bodyString += jiraJSON.fields.description
+
+                    if (postJiraTicketDescriptionString === 'true')
+                    {
+                        bodyString += '\n\n---\n\n'
+                        bodyString += '**JIRA Ticket Description:**\n\n'
+                        bodyString += jiraJSON.fields.description
+                    }
 
                     core.info(`No comment found. Adding new comment: '${bodyString}'`)
 
