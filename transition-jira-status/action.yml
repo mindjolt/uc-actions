@@ -1,0 +1,21 @@
+name: 'Post JIRA Comment'
+description: 'Post a comment linking to the JIRA ticket for the pull request'
+inputs:
+  jira_project_prefix:
+    description: 'The JIRA project prefix'
+    required: true
+  jira_status_id:
+    description: 'The JIRA Status Id that a ticket must currently be in before the transition'
+    required: true
+  jira_status_transition_id:
+    description: 'The JIRA Status Transition Id that we wish to invoke'
+    required: true
+  jira_user:
+    description: 'User for making requests to JIRA'
+    required: true
+  jira_password:
+    description: 'Password for making requests to JIRA'
+    required: true
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
