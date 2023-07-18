@@ -33,7 +33,7 @@ async function run()
 
             if (jiraResponse.ok && (jiraJSON.fields.status.id == jiraStatusId))
             {
-                var request = {
+                var postRequest = {
                     method: 'POST',
                     credentials: 'include',
                     headers: {
@@ -42,14 +42,14 @@ async function run()
                     },
                     body: JSON.stringify({
                         transition: {
-                            id: jiraStatusTransitionId
+                            id: "${jiraStatusTransitionId}"
                         }
                     })
                 };
 
-                core.debug(request);
+                core.debug(postRequest);
 
-                var jiraPOSTResponse = await fetch(`https://socialgamingnetwork.jira.com/rest/api/latest/issue/${jiraTicketNumber}/transitions`, request);
+                var jiraPOSTResponse = await fetch(`https://socialgamingnetwork.jira.com/rest/api/latest/issue/${jiraTicketNumber}/transitions`, postRequest);
                 var jiraPostJSON = await jiraResponse.json();
 
                 core.debug(jiraPostJSON);
