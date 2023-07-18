@@ -55,7 +55,7 @@ async function run()
 
                     if (jiraPOSTResponse.ok)
                     {
-                        core.info('JIRA ticket status transition succesful');
+                        core.info('JIRA ticket status transition successful');
                     }
                     else
                     {
