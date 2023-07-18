@@ -31,7 +31,7 @@ async function run()
 
             core.debug(jiraJSON);
 
-            if (jiraResponse.ok && (jiraResponse.fields.status.id == jiraStatusId))
+            if (jiraResponse.ok && (jiraJSON.fields.status.id == jiraStatusId))
             {
                 var request = {
                     method: 'POST',
