@@ -8,8 +8,8 @@ async function run()
     try
     {
         const context = github.context;
-        const api = github.getOctokit(token);
         const token = core.getInput('github_token', { required: true });
+        const api = github.getOctokit(token);
         const jiraProjectPrefix = core.getInput('jira_project_prefix', { required: false, default: 'GS' }).toUpperCase();
         const postJiraTicketDescriptionString = core.getInput('post_jira_ticket_description', { required: false, default: "true"});
 
