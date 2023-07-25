@@ -12,7 +12,7 @@ async function run()
         const jiraStatusId = core.getInput('jira_status_id', { required: true });
         const jiraStatusTransitionId = core.getInput('jira_status_transition_id', { required: true });
 
-        const jiraNumber = context.payload.pull_request.title.match(new RegExp(`^${jiraProjectPrefix}-[0-9]+`, "g"));
+        const jiraNumber = context.payload.pull_request.title.match(new RegExp(`${jiraProjectPrefix}-[0-9]+`, "g"));
 
         if (jiraNumber)
         {
