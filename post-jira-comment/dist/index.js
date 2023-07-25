@@ -6302,7 +6302,7 @@ async function run()
         const jiraProjectPrefix = core.getInput('jira_project_prefix', { required: false, default: 'GS' }).toUpperCase();
         const postJiraTicketDescriptionString = core.getInput('post_jira_ticket_description', { required: false, default: "true"});
 
-        const jiraNumber = context.payload.pull_request.title.match(new RegExp(`^${jiraProjectPrefix}-[0-9]+`, "g"));
+        const jiraNumber = context.payload.pull_request.title.match(new RegExp(`${jiraProjectPrefix}-[0-9]+`, "g"));
 
         if (jiraNumber)
         {
