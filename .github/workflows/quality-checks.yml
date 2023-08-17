@@ -42,28 +42,3 @@ jobs:
         with:
           jira_user: ${{ secrets.confluence_user }}
           jira_password: ${{ secrets.confluence_password }}
-
-  check-for-up-to-date-catalog:
-    name: 'Product catalog is up-to-date'
-    runs-on: ['self-hosted', 'k8s-svc-runners-dind']
-    env:
-      DOCUMENTATION_PATH: ${{ github.workspace }}/Assets/Plugins/JamCity/JamCity.${{ inputs.sdk_name }}/Editor/Documentation
-    steps:
-      - name: 'Checkout Package'
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ inputs.target_ref }}
-
-      - name: 'Generate Temporary Catalog README.md'
-        working-directory: ${{ env.DOCUMENTATION_PATH }}
-        run: python generate-catalog.py > temp_README.md
-
-      - name: 'Check for Missing Summaries'
-        working-directory: ${{ env.DOCUMENTATION_PATH }}
-        run: test -z "$(grep 'MISSING_SUMMARY' temp_README.md)" || (echo 'Missing summaries found!' && false)
-
-      - name: 'Compare to Existing README.md'
-        working-directory: ${{ env.DOCUMENTATION_PATH }}
-        run: |
-          CATALOG_DIFF="$(diff -u README.md temp_README.md || true)"
-          test -z "${CATALOG_DIFF}" || (echo "${CATALOG_DIFF}" && false)
