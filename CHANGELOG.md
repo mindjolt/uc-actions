@@ -23,6 +23,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Removed
 - (GS-19049) Removed deprecated `package-release` and `-snapshot` workflows
+- Removed Windows from the build matrix for unit tests and test builds
+- Removed the catalog check step from the Quality Checks job
 
 ## [v12]
 ### Added
