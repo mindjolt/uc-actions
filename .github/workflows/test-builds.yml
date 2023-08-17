@@ -49,9 +49,6 @@ jobs:
             UNITY_PLATFORM: 'WebGL'
             EXTRA_ARGUMENT: ''
 
-          - TARGET_PLATFORM: 'Windows'
-            UNITY_PLATFORM: 'StandaloneWindows64'
-            EXTRA_ARGUMENT: ''
     env:
       TARGET_PACKAGE: 'JamCity.${{ inputs.sdk_name }}'
       UNITY_COMMAND: '/Applications/Unity/Hub/Editor/${{ matrix.UNITY_VERSION }}/Unity.app/Contents/MacOS/Unity -buildTarget ${{ matrix.UNITY_PLATFORM }} -projectPath ${{ github.workspace }}/${{ matrix.UNITY_VERSION }} -batchmode -logfile -'
