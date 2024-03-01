@@ -78,10 +78,9 @@ jobs:
         shell: bash
 
     env:
-
-      GITHUB_WORKSPACE: ${{ github.workspace }}
-      INPUT_SOURCEPATH: ${{ inputs.source_path }}
-      SOURCE_PATH: '${{ env.GITHUB_WORKSPACE }}/${{ env.INPUT_SOURCEPATH }}'
+      GITHUB_REF: ${{ github.ref }}
+      GITHUB_TOKEN: ${{ github.token }}
+      SOURCE_PATH: '${{ github.workspace }}/${{ inputs.source_path }}'
 
     steps:
       - name: 'Validate version number'
@@ -94,11 +93,11 @@ jobs:
           java-version: 17
           distribution: 'adopt'
 
-      - name: 'Cloning ${{ github.ref }}'
+      - name: 'Cloning ${{ env.GITHUB_REF }}'
         uses: actions/checkout@v3
         with:
           ref: ${{ inputs.branch_name }}
-          token: ${{ fromJSON(inputs.enable_submodules) && secrets.mj_github_token || github.token }}
+          token: ${{ fromJSON(inputs.enable_submodules) && secrets.mj_github_token || env.GITHUB_TOKEN }}
           submodules: ${{ fromJSON(inputs.enable_submodules) && 'recursive' || 'false' }}
 
       - name: 'Parse package properties'
