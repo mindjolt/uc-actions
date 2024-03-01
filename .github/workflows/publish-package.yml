@@ -78,7 +78,10 @@ jobs:
         shell: bash
 
     env:
-      SOURCE_PATH: '${{ github.workspace }}/${{ inputs.source_path }}'
+
+      GITHUB_WORKSPACE: ${{ github.workspace }}
+      INPUT_SOURCEPATH: ${{ inputs.source_path }}
+      SOURCE_PATH: '${{ env.GITHUB_WORKSPACE }}/${{ env.INPUT_SOURCEPATH }}'
 
     steps:
       - name: 'Validate version number'
