@@ -34,7 +34,7 @@ jobs:
       fail-fast: false
       matrix:
         UNITY_PLATFORM: ['Android', 'OSXUniversal', 'iOS', 'WebGL']
-        UNITY_VERSION: ['2020.3.44f1', '2021.3.18f1']
+        UNITY_VERSION: ['2021.3.5f1']
     env:
       TARGET_PACKAGE: 'JamCity.${{ inputs.sdk_name }}'
       UNITY_COMMAND: '/Applications/Unity/Hub/Editor/${{ matrix.UNITY_VERSION }}/Unity.app/Contents/MacOS/Unity -buildTarget ${{ matrix.UNITY_PLATFORM }} -projectPath ${{ github.workspace }}/${{ matrix.UNITY_VERSION }} -batchmode -logfile -'
