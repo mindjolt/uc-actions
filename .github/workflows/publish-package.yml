@@ -175,7 +175,7 @@ jobs:
           version: ${{ inputs.package_version }}
 
       - name: 'Upload artifacts'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           path: |
             ${{ steps.create_package.outputs.zip_path }}
