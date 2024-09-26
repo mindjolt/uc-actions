@@ -109,7 +109,7 @@ jobs:
 
       - name: 'Upload Test Results'
         if: ${{ failure() }}
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: test-results-${{ matrix.UNITY_PLATFORM }}-${{ matrix.UNITY_VERSION }}-${{ steps.dependencies.outputs.value }}
           path: ${{ matrix.UNITY_VERSION }}/EditorTestResults*.xml
