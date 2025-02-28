@@ -1,0 +1,177 @@
+name: 'Publish Package'
+
+on:
+  workflow_call:
+    inputs:
+      branch_name:
+        description: 'Branch name to publish package from.'
+        type: string
+        required: true
+
+      package_version:
+        description: 'Version number of the package being released.'
+        type: string
+        required: true
+      source_path:
+        description: 'Repository-relative path to the package contents.'
+        type: string
+        required: true
+      artifactory_repository:
+        description: 'Which artifactory repository to publish to.'
+        type: string
+        required: true
+
+      slack_channel:
+        description: 'Which Slack channel to announce package release to.  Requires slack_token secret.'
+        type: string
+        default: 'sdk_announce'
+        required: false
+
+      dry_run:
+        description: 'If true, package is created and archived, but not released, uploaded or announced.'
+        type: boolean
+        default: false
+        required: false
+      enable_submodules:
+        description: 'If true, enables submodule support when checking out package.  Requires mj_github_token secret.'
+        type: boolean
+        default: false
+        required: false
+      update_changelog:
+        description: 'Should CHANGELOG.md file be updated?'
+        type: boolean
+        default: false
+        required: false
+      push_changes:
+        description: 'Should new package artifacts be pushed back to the repository?'
+        type: boolean
+        default: false
+        required: false
+      publish_release:
+        description: 'Should a release be created on GitHub?'
+        type: boolean
+        default: false
+        required: false
+
+    secrets:
+      packages_token:
+        required: true
+      jcpm_token:
+        required: true
+      repository_token:
+        required: false
+      mj_github_token:
+        required: false
+      slack_token:
+        required: false
+
+jobs:
+  build-and-release-package:
+    name: 'Create and publish package'
+    runs-on: ['self-hosted', 'k8s-svc-runners-dind']
+    defaults:
+      run:
+        shell: bash
+
+    env:
+      GITHUB_REF: ${{ github.ref }}
+      GITHUB_TOKEN: ${{ github.token }}
+      INPUTS_PACKAGEVERSION: ${{ inputs.package_version }}
+      INPUTS_SOURCEPATH: ${{ inputs.source_path }}
+      INPUTS_UPDATECHANGELOG: ${{ inputs.update_changelog }}
+      SOURCE_PATH: '${{ github.workspace }}/${{ inputs.source_path }}'
+      GH_USER: ${{ github.actor }}
+      GH_PAT: ${{ secrets.packages_token }}
+
+    steps:
+      - name: 'Validate version number'
+        run: |
+          echo "${{ env.INPUTS_PACKAGEVERSION }}" | grep -E '^[0-9]+(\.[0-9]+){2}(-SNAPSHOT)?$' || (echo 'Specified version number is invalid -- expected format: x.y.z or x.y.z-SNAPSHOT' && false)
+
+      - name: 'Install JDK 17'
+        uses: actions/setup-java@v3.4.1
+        with:
+          java-version: 17
+          distribution: 'adopt'
+
+      - name: 'Cloning ${{ env.GITHUB_REF }}'
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.branch_name }}
+          token: ${{ fromJSON(inputs.enable_submodules) && secrets.mj_github_token || env.GITHUB_TOKEN }}
+          submodules: ${{ fromJSON(inputs.enable_submodules) && 'recursive' || 'false' }}
+
+      - name: 'Parse package properties'
+        id: 'properties'
+        run: |
+          echo "package_name=$(grep -E "^packageName=" ${{ env.INPUTS_SOURCEPATH }}/package.properties | awk '{split($0, a, "="); print a[2]}')" >> $GITHUB_OUTPUT
+
+      - name: 'Update changelog'
+        if: ${{ !inputs.dry_run && inputs.update_changelog }}
+        uses: mindjolt/uc-actions/update-changelog@main
+        with:
+          version: ${{ inputs.package_version }}
+
+      - name: 'Create package'
+        id: 'create_package'
+        uses: mindjolt/uc-actions/create-package-github@main
+        with:
+          package_version: ${{ inputs.package_version }}
+          source_path: ${{ env.SOURCE_PATH }}
+
+      - name: 'Update package artifacts'
+        if: ${{ !inputs.dry_run && inputs.push_changes }}
+        working-directory: ${{ env.SOURCE_PATH }}
+        run: |
+          cp ${{ steps.create_package.outputs.json_path }} ./package.json
+          unzip -o -j -d . ${{ steps.create_package.outputs.zip_path }} ${{ steps.properties.outputs.package_name }}/JamCityBuildInfo.cs
+
+      - name: 'Commit changes'
+        if: ${{ !inputs.dry_run && inputs.push_changes }}
+        run: |
+          git config user.email "build@jamcity.com"
+          git config user.name "Build Machine"
+          if [[ "${{ env.INPUTS_UPDATECHANGELOG }}" == "true" ]]; then
+            git add CHANGELOG.md
+          fi
+          git add ${{ inputs.source_path }}/package.json
+          git add ${{ inputs.source_path }}/JamCityBuildInfo.cs
+          git commit -m "Files updated for ${{ steps.properties.outputs.package_name }} ${{ env.INPUTS_PACKAGEVERSION }} release."
+
+      - name: 'Push changes to GitHub'
+        if: ${{ !inputs.dry_run && inputs.push_changes }}
+        run: git push
+
+      - name: 'Publish release on GitHub'
+        if: ${{ !inputs.dry_run && inputs.publish_release }}
+        uses: mindjolt/uc-actions/publish-release@main
+        with:
+          token: ${{ secrets.repository_token }}
+          version: ${{ inputs.package_version }}
+          ref: ${{ inputs.branch_name }}
+
+      - name: 'Package Manager Pre-Publish'
+        if: ${{ !inputs.dry_run }}
+        uses: mindjolt/actions/package-manager-prepublish-github@v2
+        with:
+          token: ${{ secrets.jcpm_token }}
+          packageZip: ${{ steps.create_package.outputs.zip_path }}
+          packageJson: ${{ steps.create_package.outputs.json_path }}
+          releaseRepo: ${{ inputs.artifactory_repository }}
+          prereleaseRepo: ${{ inputs.artifactory_repository }}
+
+      - name: 'Post to Slack'
+        if: ${{ !inputs.dry_run && inputs.publish_release && inputs.slack_channel != '' }}
+        uses: mindjolt/uc-actions/post-to-slack@main
+        with:
+          token: ${{ secrets.slack_token }}
+          channel: ${{ inputs.slack_channel }}
+          project_name: ${{ steps.properties.outputs.package_name }}
+          version: ${{ inputs.package_version }}
+
+      - name: 'Upload artifacts'
+        uses: actions/upload-artifact@v4
+        with:
+          path: |
+            ${{ steps.create_package.outputs.zip_path }}
+            ${{ steps.create_package.outputs.json_path }}

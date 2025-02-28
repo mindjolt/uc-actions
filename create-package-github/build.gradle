@@ -1,0 +1,30 @@
+plugins {
+    id 'base'
+    id 'java'
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url = uri("https://maven.pkg.github.com/mindjolt/java-packages")
+        credentials {
+            username = project.findProperty("ghUser") ?: System.getenv("GH_USER")
+            password = project.findProperty("ghPat") ?: System.getenv("GH_PAT")
+        }
+    }
+}
+
+dependencies {
+    implementation 'com.jamcity:jcpm-tools_2.12:4.0.1'
+}
+
+task createPackage(type: JavaExec, description: 'Create the package for distribution.') {
+    dependsOn build
+
+    main = 'com.jamcity.PackageBuilder'
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+createPackage.mustRunAfter clean
+
+assemble.dependsOn(clean)

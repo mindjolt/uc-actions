@@ -45,6 +45,18 @@ Creates a zip file and package.json for a given package suitable for distributio
 - `json_path` - Absolute path to the generated `package.json` file
 - `zip_path` - Absolute path to the generated zip file containing the package contents
 
+## [create-package-github](https://github.com/mindjolt/uc-actions/tree/main/create-package-github)
+
+Creates a zip file and package.json for a given package suitable for distribution or publishing to GitHub.
+
+### Inputs
+- `package_version` - The version number being published in [Semantic Versioning](https://semver.org/) format
+- `source_path` - The absolute path to the source files to be packaged
+
+### Outputs
+- `json_path` - Absolute path to the generated `package.json` file
+- `zip_path` - Absolute path to the generated zip file containing the package contents
+
 ## [performance-analysis](https://github.com/mindjolt/uc-actions/tree/main/performance-analysis)
 
 Analyses the output of automated performance tests.  Depending upon the provided inputs, this action will either:
