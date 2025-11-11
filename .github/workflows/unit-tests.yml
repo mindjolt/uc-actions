@@ -29,7 +29,7 @@ on:
 jobs:
   run-tests:
     name: 'Run Tests'
-    runs-on: ['self-hosted', 'macOS', 'unity', 'unity-core']
+    runs-on: ['self-hosted', 'macOS', 'unity', 'uctemplate']
     strategy:
       fail-fast: false
       matrix:

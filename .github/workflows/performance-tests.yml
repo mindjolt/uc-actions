@@ -14,7 +14,7 @@ on:
 jobs:
   run-performance-tests:
     name: 'Run Performance Tests'
-    runs-on: ['self-hosted', 'macOS', 'unity', 'unity-core', 'performance']
+    runs-on: ['self-hosted', 'macOS', 'unity', 'uctemplate']
 
     steps:
       - name: 'Checkout Repository'

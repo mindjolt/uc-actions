@@ -22,7 +22,7 @@ on:
 jobs:
   make-builds:
     name: 'Build Player'
-    runs-on: ['self-hosted', 'macOS', 'unity', 'unity-core']
+    runs-on: ['self-hosted', 'macOS', 'unity', 'uctemplate']
     strategy:
       fail-fast: false
       matrix:
